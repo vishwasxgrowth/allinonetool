@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="display: flex; height: 100vh; position: relative; overflow: hidden; background: #080912; color: #E7E9F2; font-family: Arial; -webkit-font-smoothing: antialiased">
+  <helmet>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;600;700&amp;display=swap" rel="stylesheet">
+    <style>
+      body { margin:0; }
+      * { box-sizing:border-box; }
+      ::-webkit-scrollbar { width:9px; height:9px; }
+      ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.08); border-radius:10px; }
+      ::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,0.16); }
+      @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+      @keyframes glowPulse { 0%,100% { opacity:.5; } 50% { opacity:.9; } }
+    </style>
+  </helmet>
+
+  <!-- ============ GLOBAL NAV ============ -->
+  <aside style="{{ navStyle }}">
+    <div style="display:flex; align-items:center; gap:11px; padding:6px 6px 4px; margin-bottom:22px;">
+      <div style="position:relative; flex:none; width:38px; height:38px; border-radius:11px; background:linear-gradient(145deg,#7C7CFF,#5B4BE0); display:flex; align-items:center; justify-content:center; box-shadow:0 0 22px -4px rgba(124,124,255,0.7);">
+        <span style="font-weight:800; font-size:20px; color:#fff; transform:skewX(-6deg);">X</span>
+      </div>
+      <span style="{{ wordmarkStyle }}">XGROWTH</span>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:3px;">
+      <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg></span><span style="{{ navLabel }}">Dashboard</span></div>
+      <div onClick="{{ noop }}" style="{{ navItemActive }}"><span style="position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:20px; border-radius:3px; background:#9D9DFF; box-shadow:0 0 10px #7C7CFF;"></span><span style="{{ navIconActive }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span><span style="{{ navLabelActive }}">Clients</span></div>
+      <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M9 21V9"></path></svg></span><span style="{{ navLabel }}">Apps</span></div>
+      <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></span><span style="{{ navLabel }}">Tasks</span></div>
+      <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg></span><span style="{{ navLabel }}">Calendar</span></div>
+      <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 14l3-3 3 2 5-6"></path></svg></span><span style="{{ navLabel }}">Reports</span></div>
+      <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg></span><span style="{{ navLabel }}">Growth Roadmap</span></div>
+      <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span><span style="{{ navLabel }}">Team</span></div>
+      <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M5 5l2 2M17 17l2 2M2 12h3M19 12h3M5 19l2-2M17 7l2-2"></path></svg></span><span style="{{ navLabel }}">Settings</span></div>
+    </div>
+
+    <div style="{{ kpiBlock }}">
+      <div style="{{ navLabelDim }}; padding:0 4px 4px; letter-spacing:.08em; text-transform:uppercase;">This Week</div>
+      <sc-for list="{{ weekKpis }}" as="k" hint-placeholder-count="4">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border-radius:9px; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.05); margin-bottom:6px;">
+          <div>
+            <div style="font-size:10.5px; color:#777C92;">{{ k.label }}</div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600; color:#EDEEF6; margin-top:1px;">{{ k.val }}</div>
+          </div>
+          <div style="text-align:right;">
+            <svg width="44" height="18" viewBox="0 0 64 22" fill="none" style="display:block;"><polyline points="{{ k.spark }}" fill="none" stroke="#7C7CFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"></polyline></svg>
+            <div style="font-size:10px; color:#45D483; margin-top:1px;">▲ {{ k.delta }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top:auto; padding-top:14px;">
+      <div style="display:flex; align-items:center; gap:10px; padding:8px; border-radius:11px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05);">
+        <div style="flex:none; width:34px; height:34px; border-radius:9px; background:linear-gradient(145deg,#3A3F55,#22263a); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:#C9CCDD;">RS</div>
+        <div style="{{ navLabel }}; flex:1; min-width:0;">
+          <div style="font-size:13px; font-weight:600; color:#E7E9F2; white-space:nowrap;">Rohit Sharma</div>
+          <div style="font-size:11px; color:#777C92;">Growth Manager</div>
+        </div>
+      </div>
+      <div onClick="{{ toggleNav }}" style="display:flex; align-items:center; gap:9px; padding:9px 10px; margin-top:8px; border-radius:9px; cursor:pointer; color:#777C92; font-size:12.5px;" style-hover="{{ collapseHover }}">
+        <span style="{{ collapseIcon }}">❮</span><span style="{{ navLabel }}">Collapse</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ CLIENTS RAIL ============ -->
+  <section style="width:312px; flex:none; height:100%; display:flex; flex-direction:column; background:#0B0D17; border-right:1px solid rgba(255,255,255,0.06);">
+    <div style="padding:22px 20px 14px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:21px; font-weight:700; letter-spacing:-0.01em;">Clients</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:#A5A8FF; background:rgba(124,124,255,0.14); padding:2px 9px; border-radius:8px;">{{ clientCount }}</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:9px; margin-top:14px; padding:10px 12px; border-radius:11px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); color:#777C92; font-size:13px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4-4"></path></svg>
+        <span>Search clients...</span>
+      </div>
+    </div>
+    <div style="flex:1; overflow-y:auto; padding:2px 14px 18px; display:flex; flex-direction:column; gap:9px;">
+      <sc-for list="{{ clients }}" as="c" hint-placeholder-count="8">
+        <div onClick="{{ c.onClick }}" style="{{ c.cardStyle }}" style-hover="{{ c.cardHover }}">
+          <div style="display:flex; align-items:center; gap:11px;">
+            <div style="{{ c.avatarStyle }}">{{ c.initials }}</div>
+            <div style="flex:1; min-width:0;">
+              <div style="{{ c.nameStyle }}">{{ c.name }}</div>
+              <div style="font-size:11.5px; color:#777C92; margin-top:1px;">{{ c.meta }}</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:flex-end; justify-content:space-between; margin-top:11px;">
+            <div>
+              <div style="font-size:10px; color:#5E6377; text-transform:uppercase; letter-spacing:.05em;">Revenue</div>
+              <div style="font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:#EDEEF6;">{{ c.revenue }}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <svg width="50" height="18" viewBox="0 0 64 22" fill="none"><polyline points="{{ c.spark }}" fill="none" stroke="{{ c.sparkColor }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+              <span style="font-size:11.5px; font-weight:600; color:#45D483;">▲ {{ c.delta }}</span>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ============ WORKSPACE ============ -->
+  <main style="flex:1; min-width:0; height:100%; overflow-y:auto; background:radial-gradient(1100px 600px at 18% -8%, rgba(124,124,255,0.08), transparent 60%), #080912;">
+    <div style="max-width:1080px; margin:0 auto; padding:30px 40px 60px;">
+      <!-- publisher header -->
+      <div style="display:flex; align-items:center; gap:18px;">
+        <div style="{{ pubAvatarStyle }}">{{ client.initials }}</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:28px; font-weight:800; letter-spacing:-0.02em;">{{ client.name }}</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:9px;">
+            <span style="{{ chip }}">Since {{ client.since }}</span>
+            <span style="{{ chip }}">{{ client.appsCount }} Apps</span>
+            <span style="{{ chip }}">{{ client.model }}</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <div style="width:40px; height:40px; border-radius:11px; border:1px solid rgba(255,255,255,0.09); display:flex; align-items:center; justify-content:center; color:#9499AE; cursor:pointer;" style-hover="{{ ghostHover }}">⋯</div>
+          <div style="display:flex; align-items:center; gap:8px; padding:0 16px; height:40px; border-radius:11px; background:linear-gradient(140deg,#7C7CFF,#5B4BE0); color:#fff; font-weight:600; font-size:13.5px; cursor:pointer; box-shadow:0 8px 22px -8px rgba(124,124,255,0.8);" style-hover="{{ primaryHover }}">+ Add App</div>
+        </div>
+      </div>
+
+      <!-- tabs -->
+      <div style="display:flex; gap:26px; margin-top:26px; border-bottom:1px solid rgba(255,255,255,0.07);">
+        <span style="{{ wsTabIdle }}">Overview</span>
+        <span style="{{ wsTabActive }}">Apps</span>
+        <span style="{{ wsTabIdle }}">Team</span>
+        <span style="{{ wsTabIdle }}">Notes</span>
+        <span style="{{ wsTabIdle }}">Documents</span>
+        <span style="{{ wsTabIdle }}">Reports</span>
+      </div>
+
+      <!-- summary band -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:26px;">
+        <sc-for list="{{ summary }}" as="s" hint-placeholder-count="6">
+          <div style="padding:16px 18px; border-radius:15px; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.06);">
+            <div style="font-size:12px; color:#777C92;">{{ s.label }}</div>
+            <div style="display:flex; align-items:baseline; gap:9px; margin-top:6px;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:23px; font-weight:700; letter-spacing:-0.01em;">{{ s.val }}</span>
+              <span style="font-size:12px; font-weight:600; color:#45D483;">▲ {{ s.delta }}</span>
+            </div>
+            <div style="font-size:10.5px; color:#5E6377; margin-top:2px;">vs last week</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- apps -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin:34px 0 16px;">
+        <span style="font-size:18px; font-weight:700;">Apps <span style="color:#5E6377; font-weight:600;">({{ client.appsCount }})</span></span>
+        <span style="font-size:12.5px; color:#777C92;">Open an app to view its plan board →</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <sc-for list="{{ apps }}" as="a" hint-placeholder-count="3">
+          <div onClick="{{ a.onClick }}" style="{{ a.cardStyle }}" style-hover="{{ a.cardHover }}">
+            <div style="display:flex; align-items:center; gap:16px;">
+              <div style="{{ a.iconStyle }}">{{ a.icon }}</div>
+              <div style="width:172px; flex:none;">
+                <div style="font-size:16px; font-weight:700;">{{ a.name }}</div>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#777C92; margin-top:2px;">{{ a.pkg }}</div>
+              </div>
+              <div style="flex:1; display:grid; grid-template-columns:repeat(4,1fr); gap:14px;">
+                <sc-for list="{{ a.headline }}" as="m" hint-placeholder-count="4">
+                  <div>
+                    <div style="font-size:10.5px; color:#777C92;">{{ m.label }}</div>
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; margin-top:2px;">{{ m.val }}</div>
+                    <div style="font-size:10.5px; color:#45D483; margin-top:1px;">▲ {{ m.delta }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <svg width="74" height="30" viewBox="0 0 74 30" fill="none" style="flex:none;"><polyline points="{{ a.spark }}" fill="none" stroke="#7C7CFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+              <div style="flex:none; color:#9499AE;">›</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- team -->
+      <div style="margin-top:34px;">
+        <div style="font-size:14px; font-weight:700; color:#9499AE; margin-bottom:14px;">Team Involved</div>
+        <div style="display:flex; flex-wrap:wrap; gap:14px;">
+          <sc-for list="{{ team }}" as="t" hint-placeholder-count="4">
+            <div style="display:flex; align-items:center; gap:11px; padding:10px 16px 10px 10px; border-radius:13px; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.06);">
+              <div style="{{ t.avatarStyle }}">{{ t.initials }}</div>
+              <div>
+                <div style="font-size:13px; font-weight:600;">{{ t.role }}</div>
+                <div style="font-size:11.5px; color:#777C92;">{{ t.name }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ SLIDE-OVER : PLAN BOARD ============ -->
+  <div onClick="{{ closeSlide }}" style="{{ backdropStyle }}"></div>
+  <div style="{{ panelStyle }}">
+    <div style="height:100%; display:flex; flex-direction:column;">
+      <div style="padding:20px 24px 0;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div onClick="{{ closeSlide }}" style="display:inline-flex; align-items:center; gap:7px; color:#A5A8FF; font-size:13px; font-weight:600; cursor:pointer;" style-hover="{{ backHover }}">← Back to Apps</div>
+          <div style="display:flex; gap:8px; color:#9499AE;">
+            <div style="width:32px; height:32px; border-radius:9px; border:1px solid rgba(255,255,255,0.09); display:flex; align-items:center; justify-content:center; cursor:pointer;" style-hover="{{ ghostHover }}">⤢</div>
+            <div onClick="{{ closeSlide }}" style="width:32px; height:32px; border-radius:9px; border:1px solid rgba(255,255,255,0.09); display:flex; align-items:center; justify-content:center; cursor:pointer;" style-hover="{{ ghostHover }}">✕</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; margin-top:16px;">
+          <div style="{{ soIconStyle }}">{{ openAppObj.icon }}</div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:21px; font-weight:800; letter-spacing:-0.01em;">{{ openAppObj.name }}</div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#777C92; margin-top:2px;">{{ openAppObj.pkg }}</div>
+          </div>
+          <span style="display:inline-flex; align-items:center; gap:7px; padding:0 15px; height:36px; border-radius:10px; border:1px solid rgba(124,124,255,0.4); color:#A5A8FF; font-weight:600; font-size:12.5px; cursor:pointer;" style-hover="{{ ghostHover }}">▤ App Overview</span>
+        </div>
+      </div>
+
+      <!-- metric strip -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:18px 24px;">
+        <sc-for list="{{ openAppObj.metrics }}" as="m" hint-placeholder-count="6">
+          <div style="padding:11px 13px; border-radius:12px; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.06);">
+            <div style="font-size:10.5px; color:#777C92;">{{ m.label }}</div>
+            <div style="display:flex; align-items:baseline; justify-content:space-between; margin-top:4px;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:700;">{{ m.val }}</span>
+              <span style="font-size:10.5px; color:#45D483;">▲ {{ m.delta }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- so tabs -->
+      <div style="display:flex; gap:22px; padding:0 24px; border-bottom:1px solid rgba(255,255,255,0.07);">
+        <span onClick="{{ tabPlans }}" style="{{ soTabPlans }}">Plans &amp; Tasks</span>
+        <span onClick="{{ tabPerf }}" style="{{ soTabPerf }}">Performance</span>
+        <span onClick="{{ tabUnits }}" style="{{ soTabUnits }}">Ad Units</span>
+        <span onClick="{{ tabCreatives }}" style="{{ soTabCreatives }}">Creatives</span>
+        <span onClick="{{ tabNotes }}" style="{{ soTabNotes }}">Notes</span>
+      </div>
+
+      <div style="flex:1; overflow:auto; min-height:0;">
+        <!-- PLANS TAB -->
+        <sc-if value="{{ showPlans }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:18px 24px 8px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:16px; font-weight:700;">Plan Board</span>
+              <div style="display:flex; gap:9px; align-items:center;">
+                <span style="display:inline-flex; align-items:center; gap:7px; padding:0 13px; height:34px; border-radius:9px; border:1px solid rgba(255,255,255,0.09); color:#9499AE; font-size:12.5px; cursor:pointer;" style-hover="{{ ghostHover }}">This Week ▾</span>
+                <span style="display:inline-flex; align-items:center; padding:0 14px; height:34px; border-radius:9px; background:linear-gradient(140deg,#7C7CFF,#5B4BE0); color:#fff; font-weight:600; font-size:12.5px; cursor:pointer; box-shadow:0 8px 22px -10px rgba(124,124,255,0.9);" style-hover="{{ primaryHover }}">+ New Plan</span>
+              </div>
+            </div>
+          </div>
+          <div style="overflow-x:auto; padding:14px 24px 18px;">
+            <div style="display:flex; gap:14px; align-items:flex-start; min-width:max-content;">
+              <sc-for list="{{ columns }}" as="col" hint-placeholder-count="4">
+                <div onDragOver="{{ col.onDragOver }}" onDragEnter="{{ col.onDragEnter }}" onDrop="{{ col.onDrop }}" style="{{ col.colStyle }}">
+                  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                    <span style="{{ col.titleStyle }}">{{ col.name }}</span>
+                    <span style="font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:#777C92; background:rgba(255,255,255,0.05); padding:1px 8px; border-radius:7px;">{{ col.count }}</span>
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:10px;">
+                    <sc-for list="{{ col.cards }}" as="card" hint-placeholder-count="3">
+                      <div draggable="true" onDragStart="{{ card.onDragStart }}" onDragEnd="{{ card.onDragEnd }}" style="{{ card.cardStyle }}" style-hover="{{ card.cardHover }}">
+                        <div style="font-size:13.5px; font-weight:600; line-height:1.35; margin-bottom:11px;">{{ card.title }}</div>
+                        <div style="display:flex; align-items:center; justify-content:space-between;">
+                          <span style="{{ card.tagStyle }}">{{ card.tag }}</span>
+                          <div style="{{ card.whoStyle }}">{{ card.who }}</div>
+                        </div>
+                        <div style="font-size:11px; color:#777C92; margin-top:10px; display:flex; align-items:center; gap:6px;">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+                          {{ card.date }}
+                        </div>
+                      </div>
+                    </sc-for>
+                    <div style="text-align:center; padding:9px; border:1px dashed rgba(255,255,255,0.12); border-radius:10px; color:#5E6377; font-size:12px; cursor:pointer;" style-hover="{{ addCardHover }}">+ Add Card</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="padding:6px 24px 22px;">
+            <div style="font-size:13px; font-weight:700; color:#9499AE; margin-bottom:11px;">Plan Summary</div>
+            <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:10px;">
+              <sc-for list="{{ planSummary }}" as="p" hint-placeholder-count="5">
+                <div style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.06);">
+                  <div style="font-size:10.5px; color:#777C92;">{{ p.label }}</div>
+                  <div style="font-family:'JetBrains Mono',monospace; font-size:18px; font-weight:700; margin-top:3px; color:{{ p.color }};">{{ p.val }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <!-- OTHER TABS -->
+        <sc-if value="{{ showOther }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:80px 40px; gap:14px;">
+            <div style="width:62px; height:62px; border-radius:18px; background:rgba(124,124,255,0.1); border:1px solid rgba(124,124,255,0.25); display:flex; align-items:center; justify-content:center; color:#A5A8FF;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 14l3-3 3 2 5-6"></path></svg>
+            </div>
+            <div style="font-size:17px; font-weight:700;">{{ otherTitle }}</div>
+            <div style="font-size:13px; color:#777C92; max-width:300px;">{{ otherSub }}</div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { navCollapsed: false, client: 'A', app: null, slideOpen: false, tab: 'plans', board: null, dragOverCol: null };
+
+  buildData() {
+    const labels = ['Installs', 'Ad Revenue', 'eCPM', 'Impressions', 'ARPDAU', 'Show Rate'];
+    const mk = (vals) => labels.map((l, i) => ({ label: l, val: vals[i][0], delta: vals[i][1] }));
+    const spark = (seed) => { let v = (seed % 6) + 6, out = []; for (let i = 0; i < 12; i++) { v += (Math.sin(seed * 1.3 + i * 0.9) * 2.4) + 0.4; v = Math.max(3, Math.min(19, v)); out.push((i * (64 / 11)).toFixed(1) + ',' + (22 - v).toFixed(1)); } return out.join(' '); };
+    const spark2 = (seed) => { let v = (seed % 5) + 8, out = []; for (let i = 0; i < 14; i++) { v += (Math.sin(seed * 0.7 + i) * 2.8) + 0.5; v = Math.max(4, Math.min(26, v)); out.push((i * (74 / 13)).toFixed(1) + ',' + (30 - v).toFixed(1)); } return out.join(' '); };
+
+    const TEAM = [
+      { initials: 'M', role: 'Monetization Lead', name: 'Neha Verma', color: '#7C7CFF' },
+      { initials: 'A', role: 'ASO Lead', name: 'Arjun Mehta', color: '#5BA8F5' },
+      { initials: 'U', role: 'UA Lead', name: 'Karan Singh', color: '#2DD4BF' },
+      { initials: 'G', role: 'Growth Lead', name: 'Priya Nair', color: '#F4A862' }
+    ];
+
+    const BOARD = [
+      { name: 'To Do', cards: [
+        { id: 't1', title: 'ASO Keyword Research', tag: 'ASO', date: 'May 20', who: 'A' },
+        { id: 't2', title: 'Create New Screenshots', tag: 'ASO', date: 'May 22', who: 'A' },
+        { id: 't3', title: 'Test New Banner Ad', tag: 'Monetization', date: 'May 23', who: 'M' }
+      ]},
+      { name: 'In Progress', cards: [
+        { id: 'p1', title: 'Optimize Store Listing', tag: 'ASO', date: 'Due May 18', who: 'A' },
+        { id: 'p2', title: 'Facebook UA Campaign', tag: 'UA', date: 'Due May 19', who: 'U' },
+        { id: 'p3', title: 'A/B Test Interstitial', tag: 'Monetization', date: 'Due May 21', who: 'M' },
+        { id: 'p4', title: 'Push Notification Campaign', tag: 'Growth', date: 'Due May 21', who: 'G' }
+      ]},
+      { name: 'Review', cards: [
+        { id: 'r1', title: 'Check Ad Placement CTR', tag: 'Monetization', date: 'Due May 17', who: 'M' },
+        { id: 'r2', title: 'Review CPI & ROAS', tag: 'UA', date: 'Due May 17', who: 'U' }
+      ]},
+      { name: 'Done', cards: [
+        { id: 'd1', title: 'Competitor Analysis', tag: 'ASO', date: 'May 14', who: '\u2713', done: true },
+        { id: 'd2', title: 'Google Ads Campaign', tag: 'UA', date: 'May 15', who: '\u2713', done: true },
+        { id: 'd3', title: 'Feature Graphic Update', tag: 'ASO', date: 'May 13', who: '\u2713', done: true },
+        { id: 'd4', title: 'Ad Unit Refresh', tag: 'Monetization', date: 'May 13', who: '\u2713', done: true },
+        { id: 'd5', title: 'Event Tracking Setup', tag: 'Growth', date: 'May 12', who: '\u2713', done: true }
+      ]}
+    ];
+
+    const clients = [
+      { id: 'A', initials: 'PA', name: 'Publisher A', apps: 3, since: 'Jan 2023', revenue: '$28,450', delta: '15.2%' },
+      { id: 'B', initials: 'PB', name: 'Publisher B', apps: 4, since: 'Mar 2023', revenue: '$19,850', delta: '8.7%' },
+      { id: 'C', initials: 'PC', name: 'Publisher C', apps: 2, since: 'May 2023', revenue: '$12,420', delta: '6.1%' },
+      { id: 'D', initials: 'PD', name: 'Publisher D', apps: 5, since: 'Aug 2023', revenue: '$15,230', delta: '11.3%' },
+      { id: 'E', initials: 'PE', name: 'Publisher E', apps: 3, since: 'Oct 2023', revenue: '$9,640', delta: '4.8%' },
+      { id: 'F', initials: 'PF', name: 'Publisher F', apps: 2, since: 'Nov 2023', revenue: '$6,230', delta: '3.2%' },
+      { id: 'G', initials: 'PG', name: 'Publisher G', apps: 4, since: 'Dec 2023', revenue: '$18,780', delta: '12.9%' },
+      { id: 'H', initials: 'PH', name: 'Publisher H', apps: 1, since: 'Jan 2024', revenue: '$4,120', delta: '2.4%' },
+      { id: 'I', initials: 'PI', name: 'Publisher I', apps: 2, since: 'Feb 2024', revenue: '$7,890', delta: '7.5%' },
+      { id: 'J', initials: 'PJ', name: 'Publisher J', apps: 3, since: 'Feb 2024', revenue: '$11,340', delta: '9.1%' }
+    ];
+
+    const detailA = {
+      initials: 'PA', name: 'Publisher A', since: 'Jan 2023', model: 'Ads + IAP', appsCount: 3,
+      apps: [
+        { id: 'star', icon: 'SA', name: 'Star Adventure', pkg: 'com.pubA.star', metrics: mk([['128K','12.4%'],['$12,450','15.3%'],['$3.21','8.7%'],['3.87M','10.2%'],['$0.48','6.1%'],['62.3%','2.4%']]), seed: 4 },
+        { id: 'puzzle', icon: 'PW', name: 'Puzzle World', pkg: 'com.pubA.puzzle', metrics: mk([['95K','8.6%'],['$8,230','11.7%'],['$2.45','6.3%'],['2.91M','9.8%'],['$0.36','4.7%'],['58.1%','1.9%']]), seed: 7 },
+        { id: 'race', icon: 'SR', name: 'Speed Racing', pkg: 'com.pubA.race', metrics: mk([['72K','5.3%'],['$5,770','7.2%'],['$2.18','3.9%'],['2.44M','6.1%'],['$0.29','2.1%'],['55.6%','1.3%']]), seed: 11 }
+      ],
+      summary: [
+        { label: 'Total Revenue', val: '$28,450', delta: '15.2%' },
+        { label: 'Total Installs', val: '295K', delta: '9.8%' },
+        { label: 'Avg eCPM', val: '$2.61', delta: '6.4%' },
+        { label: 'Total Impressions', val: '9.22M', delta: '8.7%' },
+        { label: 'Avg Show Rate', val: '58.7%', delta: '1.9%' },
+        { label: 'Avg ARPDAU', val: '$0.38', delta: '3.2%' }
+      ],
+      team: TEAM
+    };
+
+    const genNames = [['Galaxy Quest','GQ','galaxy'],['Tower Blast','TB','tower'],['Word Mania','WM','word'],['Coin Dash','CD','coin'],['Pixel Farm','PX','pixel']];
+    const genBase = [['64K','7.1%'],['$4,210','6.4%'],['$2.05','4.2%'],['1.82M','5.5%'],['$0.31','3.1%'],['54.2%','1.4%']];
+    const makeGeneric = (c) => {
+      const apps = [];
+      for (let i = 0; i < c.apps; i++) { const g = genNames[i % genNames.length]; apps.push({ id: g[2], icon: g[1], name: g[0], pkg: 'com.pub' + c.id + '.' + g[2], metrics: mk(genBase), seed: i + 3 }); }
+      return { initials: c.initials, name: c.name, since: c.since, model: 'Ads + IAP', appsCount: c.apps, apps,
+        summary: [
+          { label: 'Total Revenue', val: c.revenue, delta: c.delta },
+          { label: 'Total Installs', val: (c.apps * 60) + 'K', delta: '7.0%' },
+          { label: 'Avg eCPM', val: '$2.30', delta: '5.0%' },
+          { label: 'Total Impressions', val: (c.apps * 1.8).toFixed(1) + 'M', delta: '6.0%' },
+          { label: 'Avg Show Rate', val: '56.0%', delta: '1.5%' },
+          { label: 'Avg ARPDAU', val: '$0.33', delta: '2.5%' }
+        ], team: TEAM };
+    };
+
+    const detail = {};
+    clients.forEach(c => { detail[c.id] = c.id === 'A' ? detailA : makeGeneric(c); });
+
+    const weekKpis = [
+      { label: 'Revenue', val: '$124,560', delta: '14.6%', spark: spark(2) },
+      { label: 'Impressions', val: '42.7M', delta: '9.3%', spark: spark(5) },
+      { label: 'eCPM', val: '$2.91', delta: '6.5%', spark: spark(8) },
+      { label: 'Fill Rate', val: '78.3%', delta: '3.1%', spark: spark(3) }
+    ];
+
+    return { clients, detail, BOARD, weekKpis, spark, spark2 };
+  }
+  get D() { if (!this._d) this._d = this.buildData(); return this._d; }
+
+  cloneBoard() { return this.D.BOARD.map(c => ({ name: c.name, cards: c.cards.map(x => Object.assign({}, x)) })); }
+
+  selectClient(id) { this.setState({ client: id, slideOpen: false, app: null }); }
+  openApp(id) { this.setState({ app: id, slideOpen: true, tab: 'plans', board: this.cloneBoard() }); }
+  closeSlide() { this.setState({ slideOpen: false }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ app: null }), 380); }
+  toggleNav() { this.setState(s => ({ navCollapsed: !s.navCollapsed })); }
+
+  moveCard(toCol) {
+    const id = this._drag; if (!id) return;
+    const board = (this.state.board || this.cloneBoard());
+    let moved = null;
+    board.forEach(col => { const i = col.cards.findIndex(c => c.id === id); if (i > -1) { moved = col.cards.splice(i, 1)[0]; } });
+    if (moved) { const t = board.find(c => c.name === toCol); if (t) { moved.done = (toCol === 'Done'); moved.who = moved.done ? '\u2713' : (moved._who || moved.who); if (!moved.done && moved.who === '\u2713') moved.who = 'A'; t.cards.push(moved); } }
+    this.setState({ board, dragOverCol: null });
+  }
+
+  appObj(clientId, appId) {
+    const d = this.D.detail[clientId]; if (!d) return null;
+    return d.apps.find(a => a.id === appId) || d.apps[0];
+  }
+
+  renderVals() {
+    const s = this.state, D = this.D;
+    const collapsed = s.navCollapsed;
+    const accent = '#7C7CFF';
+
+    // ---- nav ----
+    const navStyle = { width: collapsed ? '74px' : '256px', flex: 'none', height: '100%', display: 'flex', flexDirection: 'column', padding: collapsed ? '20px 14px' : '20px 16px', background: '#0C0E1A', borderRight: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden' };
+    const navItem = { position: 'relative', display: 'flex', alignItems: 'center', gap: '12px', padding: collapsed ? '11px 0' : '11px 12px', justifyContent: collapsed ? 'center' : 'flex-start', borderRadius: '11px', cursor: 'pointer', color: '#8A90A6', fontSize: '13.5px', fontWeight: 500, transition: 'background .15s, color .15s' };
+    const navItemHover = Object.assign({}, navItem, { background: 'rgba(255,255,255,0.045)', color: '#D7DAE8' });
+    const navItemActive = Object.assign({}, navItem, { background: 'rgba(124,124,255,0.13)', color: '#E9E9FF', fontWeight: 600 });
+    const navIcon = { flex: 'none', display: 'flex', color: 'inherit' };
+    const navIconActive = Object.assign({}, navIcon, { color: '#B9B9FF' });
+    const navLabel = { display: collapsed ? 'none' : 'block', whiteSpace: 'nowrap' };
+    const navLabelActive = Object.assign({}, navLabel);
+    const navLabelDim = { display: collapsed ? 'none' : 'block', fontSize: '10px', color: '#5E6377', fontWeight: 600 };
+    const wordmarkStyle = { display: collapsed ? 'none' : 'block', fontSize: '18px', fontWeight: 800, letterSpacing: '0.06em' };
+    const kpiBlock = { display: collapsed ? 'none' : 'block', marginTop: '22px', paddingTop: '18px', borderTop: '1px solid rgba(255,255,255,0.06)' };
+    const collapseIcon = { display: 'inline-block', transition: 'transform .32s', transform: collapsed ? 'rotate(180deg)' : 'none' };
+    const collapseHover = { display: 'flex', alignItems: 'center', gap: '9px', padding: '9px 10px', marginTop: '8px', borderRadius: '9px', cursor: 'pointer', color: '#D7DAE8', fontSize: '12.5px', background: 'rgba(255,255,255,0.045)' };
+
+    // ---- clients rail ----
+    const palette = ['#7C7CFF','#5BA8F5','#2DD4BF','#F4A862','#F2616E','#E06FB0','#9D7CF0','#D9A33A','#54B0E0','#5BD49A'];
+    const clients = D.clients.map((c, i) => {
+      const sel = c.id === s.client;
+      return {
+        initials: c.initials, name: c.name, revenue: c.revenue, delta: c.delta,
+        meta: c.apps + ' Apps \u00b7 Since ' + c.since,
+        spark: D.spark(i + 1), sparkColor: sel ? '#B9B9FF' : 'rgba(124,124,255,0.55)',
+        onClick: () => this.selectClient(c.id),
+        cardStyle: { cursor: 'pointer', padding: '14px', borderRadius: '15px', border: sel ? '1px solid rgba(124,124,255,0.6)' : '1px solid rgba(255,255,255,0.06)', background: sel ? 'linear-gradient(160deg, rgba(124,124,255,0.16), rgba(124,124,255,0.04))' : 'rgba(255,255,255,0.022)', boxShadow: sel ? '0 0 0 1px rgba(124,124,255,0.25), 0 14px 30px -16px rgba(124,124,255,0.8)' : 'none', transition: 'border-color .15s, background .15s, transform .15s' },
+        cardHover: sel ? null : { cursor: 'pointer', padding: '14px', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.14)', background: 'rgba(255,255,255,0.05)', transform: 'translateY(-1px)' },
+        avatarStyle: { flex: 'none', width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: '14px', background: 'linear-gradient(150deg,' + palette[i % palette.length] + ', rgba(0,0,0,0.25))', boxShadow: '0 4px 12px -4px ' + palette[i % palette.length] + '88' },
+        nameStyle: { fontSize: '15px', fontWeight: 700, color: sel ? '#EDEDFF' : '#E7E9F2', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
+      };
+    });
+
+    // ---- workspace ----
+    const client = D.detail[s.client];
+    const chip = { fontSize: '12px', color: '#9499AE', padding: '4px 11px', borderRadius: '20px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' };
+    const pubAvatarStyle = { flex: 'none', width: '64px', height: '64px', borderRadius: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: '23px', background: 'linear-gradient(150deg,#7C7CFF,#5B4BE0)', boxShadow: '0 10px 30px -10px rgba(124,124,255,0.9)' };
+    const apps = client.apps.map(a => ({
+      icon: a.icon, name: a.name, pkg: a.pkg, spark: D.spark2(a.seed),
+      headline: [a.metrics[0], a.metrics[1], a.metrics[2], a.metrics[4]],
+      onClick: () => this.openApp(a.id),
+      cardStyle: { cursor: 'pointer', padding: '18px 20px', borderRadius: '17px', background: 'rgba(255,255,255,0.022)', border: '1px solid rgba(255,255,255,0.06)', transition: 'border-color .15s, background .15s, transform .15s' },
+      cardHover: { cursor: 'pointer', padding: '18px 20px', borderRadius: '17px', background: 'rgba(124,124,255,0.06)', border: '1px solid rgba(124,124,255,0.4)', transform: 'translateY(-2px)' },
+      iconStyle: { flex: 'none', width: '46px', height: '46px', borderRadius: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '14px', color: '#C7CAE0', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }
+    }));
+    const team = client.team.map(t => ({ initials: t.initials, role: t.role, name: t.name, avatarStyle: { flex: 'none', width: '36px', height: '36px', borderRadius: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: '13px', background: 'linear-gradient(150deg,' + t.color + ', rgba(0,0,0,0.3))' } }));
+
+    const wsTabActive = { paddingBottom: '13px', fontSize: '14px', fontWeight: 700, color: '#E7E9F2', borderBottom: '2px solid #7C7CFF', cursor: 'pointer' };
+    const wsTabIdle = { paddingBottom: '13px', fontSize: '14px', fontWeight: 500, color: '#777C92', cursor: 'pointer' };
+    const ghostHover = { background: 'rgba(255,255,255,0.06)' };
+    const primaryHover = { filter: 'brightness(1.08)' };
+
+    // ---- slide-over ----
+    const open = s.slideOpen;
+    const backdropStyle = { position: 'absolute', inset: 0, background: 'rgba(5,6,12,0.55)', backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', opacity: open ? 1 : 0, pointerEvents: open ? 'auto' : 'none', transition: 'opacity .38s' };
+    const panelStyle = { position: 'absolute', top: 0, right: 0, bottom: 0, width: '660px', maxWidth: '92%', background: '#0C0E1A', borderLeft: '1px solid rgba(124,124,255,0.25)', boxShadow: '-30px 0 80px -20px rgba(0,0,0,0.7), -1px 0 0 rgba(124,124,255,0.3)', transform: open ? 'translateX(0)' : 'translateX(102%)', transition: 'transform .42s cubic-bezier(.4,0,.1,1)', zIndex: 5 };
+    const openAppObj = s.app ? this.appObj(s.client, s.app) : { icon: '', name: '', pkg: '', metrics: [] };
+    const soIconStyle = { flex: 'none', width: '52px', height: '52px', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '16px', color: '#C7CAE0', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' };
+
+    const soTab = (id) => (s.tab === id ? { paddingBottom: '12px', fontSize: '13px', fontWeight: 700, color: '#E7E9F2', borderBottom: '2px solid #7C7CFF', cursor: 'pointer' } : { paddingBottom: '12px', fontSize: '13px', fontWeight: 500, color: '#777C92', cursor: 'pointer' });
+
+    // ---- kanban ----
+    const board = s.board || this.cloneBoard();
+    const tagMeta = { ASO: { bg: 'rgba(124,124,255,0.16)', fg: '#A9AAFF' }, UA: { bg: 'rgba(45,212,191,0.15)', fg: '#54E3CF' }, Monetization: { bg: 'rgba(244,168,98,0.15)', fg: '#F6BE7C' }, Growth: { bg: 'rgba(74,222,128,0.15)', fg: '#74E7A0' } };
+    const whoColor = { A: '#5BA8F5', U: '#2DD4BF', M: '#7C7CFF', G: '#F4A862' };
+    const columns = board.map(col => {
+      const over = s.dragOverCol === col.name;
+      return {
+        name: col.name, count: col.cards.length,
+        titleStyle: { fontSize: '14px', fontWeight: 700, color: col.name === 'Review' ? '#F6BE7C' : (col.name === 'Done' ? '#74E7A0' : '#E7E9F2') },
+        colStyle: { width: '236px', flex: 'none', background: over ? 'rgba(124,124,255,0.08)' : 'rgba(255,255,255,0.018)', border: over ? '1px solid rgba(124,124,255,0.5)' : '1px solid rgba(255,255,255,0.06)', borderRadius: '14px', padding: '13px', transition: 'background .15s, border-color .15s' },
+        onDragOver: (e) => { e.preventDefault(); },
+        onDragEnter: () => { if (s.dragOverCol !== col.name) this.setState({ dragOverCol: col.name }); },
+        onDrop: (e) => { e.preventDefault(); this.moveCard(col.name); },
+        cards: col.cards.map(card => {
+          const tm = tagMeta[card.tag] || { bg: 'rgba(255,255,255,0.08)', fg: '#aaa' };
+          return {
+            title: card.title, tag: card.tag, date: card.date, who: card.who,
+            onDragStart: (e) => { this._drag = card.id; if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move'; },
+            onDragEnd: () => { this._drag = null; if (s.dragOverCol) this.setState({ dragOverCol: null }); },
+            cardStyle: { cursor: 'grab', padding: '13px', borderRadius: '12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', transition: 'border-color .15s, transform .12s' },
+            cardHover: { cursor: 'grab', padding: '13px', borderRadius: '12px', background: 'rgba(255,255,255,0.065)', border: '1px solid rgba(124,124,255,0.4)', transform: 'translateY(-1px)' },
+            tagStyle: { display: 'inline-block', padding: '3px 10px', borderRadius: '7px', fontSize: '11px', fontWeight: 700, background: tm.bg, color: tm.fg },
+            whoStyle: { flex: 'none', width: '23px', height: '23px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: '11px', background: card.done ? '#3BA66A' : (whoColor[card.who] || '#666') }
+          };
+        })
+      };
+    });
+    const counts = {}; board.forEach(c => counts[c.name] = c.cards.length);
+    const total = (counts['To Do'] || 0) + (counts['In Progress'] || 0) + (counts['Review'] || 0) + (counts['Done'] || 0);
+    const pct = (n) => total ? Math.round(n / total * 100) + '%' : '0%';
+    const planSummary = [
+      { label: 'Total Tasks', val: String(total), color: '#EDEEF6' },
+      { label: 'Completed', val: (counts['Done'] || 0) + ' (' + pct(counts['Done'] || 0) + ')', color: '#74E7A0' },
+      { label: 'In Progress', val: (counts['In Progress'] || 0) + ' (' + pct(counts['In Progress'] || 0) + ')', color: '#A9AAFF' },
+      { label: 'To Do', val: (counts['To Do'] || 0) + ' (' + pct(counts['To Do'] || 0) + ')', color: '#9499AE' },
+      { label: 'In Review', val: (counts['Review'] || 0) + ' (' + pct(counts['Review'] || 0) + ')', color: '#F6BE7C' }
+    ];
+
+    const otherMeta = { performance: ['Performance', 'Revenue, eCPM and impression trends for this app will live here.'], adunits: ['Ad Units', 'Banner, interstitial and rewarded placements with live fill rates.'], creatives: ['Creatives', 'Creative variants, A/B test results and asset library.'], notes: ['Notes', 'Shared notes and context for this app, by the growth team.'] };
+    const om = otherMeta[s.tab] || ['', ''];
+
+    return {
+      noop: () => {},
+      navStyle, navItem, navItemHover, navItemActive, navIcon, navIconActive, navLabel, navLabelActive, navLabelDim, wordmarkStyle, kpiBlock, collapseIcon, collapseHover,
+      toggleNav: () => this.toggleNav(),
+      weekKpis: D.weekKpis,
+      clients, clientCount: D.clients.length,
+      client, chip, pubAvatarStyle, apps, team, summary: client.summary,
+      wsTabActive, wsTabIdle, ghostHover, primaryHover,
+      backdropStyle, panelStyle, openAppObj, soIconStyle,
+      closeSlide: () => this.closeSlide(),
+      tabPlans: () => this.setState({ tab: 'plans' }), tabPerf: () => this.setState({ tab: 'performance' }), tabUnits: () => this.setState({ tab: 'adunits' }), tabCreatives: () => this.setState({ tab: 'creatives' }), tabNotes: () => this.setState({ tab: 'notes' }),
+      soTabPlans: soTab('plans'), soTabPerf: soTab('performance'), soTabUnits: soTab('adunits'), soTabCreatives: soTab('creatives'), soTabNotes: soTab('notes'),
+      showPlans: s.tab === 'plans', showOther: s.tab !== 'plans', otherTitle: om[0], otherSub: om[1],
+      columns, planSummary,
+      backHover: { color: '#C7C7FF' }, addCardHover: { background: 'rgba(255,255,255,0.04)', color: '#9499AE' }
+    };
+  }
+}
+</script>
+</body>
+</html>

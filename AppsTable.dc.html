@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="height:100%; display:flex; flex-direction:column; background:#fff; font-family:'Kalam',cursive; overflow:hidden;">
+  <div style="display:flex; align-items:center; gap:12px; padding:13px 18px 9px;">
+    <div style="{{ avatarStyle }}">{{ client.initials }}</div>
+    <div style="flex:1; min-width:0;">
+      <div style="font-size:20px; font-weight:700; color:#2A2A2A;">{{ client.name }}</div>
+      <div style="font-size:13px; color:#8C8C88;">{{ headerMeta }}</div>
+    </div>
+    <div style="display:flex; gap:8px; color:#8C8C88;">
+      <div style="border:1.5px solid #D8D8D4; border-radius:6px; width:30px; height:28px; display:flex; align-items:center; justify-content:center;">&#8943;</div>
+      <div style="border:1.5px solid #D8D8D4; border-radius:6px; width:30px; height:28px; display:flex; align-items:center; justify-content:center;">&#10005;</div>
+    </div>
+  </div>
+  <div style="display:flex; gap:18px; padding:2px 18px 0; border-bottom:1.5px solid #E2E2DE; font-size:13.5px;">
+    <span style="color:#8C8C88; padding-bottom:8px;">Overview</span>
+    <span style="color:#3A3AC0; font-weight:700; padding-bottom:8px; border-bottom:2.5px solid #5B5BD6;">Apps</span>
+    <span style="color:#8C8C88; padding-bottom:8px;">Team</span>
+    <span style="color:#8C8C88; padding-bottom:8px;">Notes</span>
+    <span style="color:#8C8C88; padding-bottom:8px;">Documents</span>
+    <span style="color:#8C8C88; padding-bottom:8px;">Reports</span>
+  </div>
+  <div style="flex:1; overflow:auto; padding:14px 18px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+      <span style="font-size:17px; font-weight:700;">Apps ({{ appCount }})</span>
+      <span style="background:#5B5BD6; color:#fff; font-size:13px; padding:5px 12px; border-radius:7px;">+ Add App</span>
+    </div>
+    <div style="display:flex; align-items:center; padding:6px 8px; color:#8C8C88; font-size:12px; border-bottom:1.5px solid #E2E2DE;">
+      <span style="flex:2; min-width:150px;">App Name</span>
+      <span style="flex:1; text-align:right;">Installs</span>
+      <span style="flex:1; text-align:right;">Ad Revenue</span>
+      <span style="flex:1; text-align:right;">eCPM</span>
+      <span style="flex:1; text-align:right;">Impressions</span>
+      <span style="flex:1; text-align:right;">ARPDAU</span>
+      <span style="flex:1; text-align:right;">Show Rate</span>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+      <sc-for list="{{ appRows }}" as="app" hint-placeholder-count="3">
+        <div onClick="{{ app.onClick }}" style="{{ app.rowStyle }}">
+          <div style="display:flex; align-items:center;">
+            <div style="flex:2; min-width:150px; display:flex; align-items:center; gap:10px;">
+              <div style="{{ iconStyle }}">{{ app.icon }}</div>
+              <div>
+                <div style="font-size:14px; font-weight:700;">{{ app.name }}</div>
+                <div style="font-size:11.5px; color:#8C8C88;">{{ app.pkg }}</div>
+              </div>
+            </div>
+            <sc-for list="{{ app.metrics }}" as="m" hint-placeholder-count="6">
+              <div style="flex:1; text-align:right;">
+                <div style="font-size:14px; font-weight:700; color:#2A2A2A;">{{ m.val }}</div>
+                <div style="font-size:11px; color:#2E7D46;">&#8593; {{ m.delta }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="text-align:center; padding:10px; margin-top:12px; border:1.5px dashed #D8D8D4; border-radius:8px; color:#8C8C88; font-size:13px;">&#8964; Click on any app to view its plan board</div>
+    <div style="margin-top:20px;">
+      <div style="font-size:16px; font-weight:700; margin-bottom:10px;">{{ summaryTitle }}</div>
+      <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:10px;">
+        <sc-for list="{{ summary }}" as="s" hint-placeholder-count="6">
+          <div style="border:1.5px solid #E2E2DE; border-radius:8px; padding:10px;">
+            <div style="font-size:11.5px; color:#8C8C88;">{{ s.label }}</div>
+            <div style="font-size:17px; font-weight:700;">{{ s.val }}</div>
+            <div style="font-size:10.5px; color:#2E7D46;">&#8593; {{ s.delta }} vs last week</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="margin-top:20px;">
+      <div style="font-size:16px; font-weight:700; margin-bottom:10px;">Team Involved</div>
+      <div style="display:flex; gap:24px; flex-wrap:wrap;">
+        <sc-for list="{{ team }}" as="t" hint-placeholder-count="4">
+          <div style="display:flex; align-items:center; gap:9px;">
+            <div style="{{ t.avatarStyle }}">{{ t.initials }}</div>
+            <div>
+              <div style="font-size:13px; font-weight:700; color:#2A2A2A;">{{ t.role }}</div>
+              <div style="font-size:12px; color:#8C8C88;">{{ t.name }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const client = p.client || {};
+    const apps = client.apps || [];
+    const sel = p.selectedId;
+    const appRows = apps.map(a => {
+      const selected = a.id === sel;
+      return {
+        icon: a.icon,
+        name: a.name,
+        pkg: a.pkg,
+        metrics: a.metrics || [],
+        onClick: () => { if (p.onSelect) p.onSelect(a.id); },
+        rowStyle: {
+          cursor: 'pointer',
+          padding: '11px 12px',
+          borderRadius: '9px',
+          border: selected ? '2px solid #5B5BD6' : '1.5px solid #E2E2DE',
+          background: selected ? '#F4F4FE' : '#fff',
+          boxShadow: selected ? '2px 2px 0 #5B5BD6' : 'none'
+        }
+      };
+    });
+    return {
+      client,
+      headerMeta: 'Since ' + (client.since || '') + '  \u00b7  ' + (client.appsCount || apps.length) + ' Apps  \u00b7  Business Model: ' + (client.model || 'Ads + IAP'),
+      appCount: apps.length,
+      appRows,
+      summary: client.summary || [],
+      summaryTitle: (client.name || '') + ' Summary',
+      team: (client.team || []).map(t => ({
+        initials: t.initials, role: t.role, name: t.name,
+        avatarStyle: { flex: 'none', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: '13px', background: t.color }
+      })),
+      avatarStyle: { flex: 'none', width: '40px', height: '40px', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: '15px', background: '#5B5BD6' },
+      iconStyle: { flex: 'none', width: '34px', height: '34px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6E6E6A', fontWeight: 700, fontSize: '11px', border: '1.5px dashed #BEBEB9', background: '#F6F6F4' }
+    };
+  }
+}
+</script>
+</body>
+</html>

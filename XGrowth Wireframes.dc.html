@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="min-height:100vh; background:#ECECEA; font-family:'Kalam',cursive; color:#2A2A2A; padding:28px 28px 70px;">
+  <helmet>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    <style> body { margin:0; } * { box-sizing:border-box; } </style>
+  </helmet>
+
+  <div style="width:1440px; margin:0 auto 26px;">
+    <div style="display:flex; align-items:center; gap:13px;">
+      <div style="width:40px; height:40px; background:#2A2A2A; color:#fff; border-radius:9px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:21px;">&#10005;</div>
+      <div>
+        <div style="font-size:25px; font-weight:700;">XGROWTH &middot; Drill-down navigation &mdash; wireframe explorations</div>
+        <div style="font-size:15px; color:#6E6E6A;">One flow, three ways to move through it. Each frame below is live &mdash; click clients, apps and cards to walk it.</div>
+      </div>
+    </div>
+    <div style="margin-top:14px; display:inline-flex; align-items:center; gap:10px; background:#fff; border:1.5px solid #D8D8D4; border-radius:10px; padding:8px 14px; font-size:14px;">
+      <span style="background:#EDEDFB; color:#3A3AC0; border:1.5px solid #5B5BD6; border-radius:7px; padding:3px 11px; font-weight:700; white-space:nowrap;">1 &middot; Clients</span>
+      <span style="color:#9A9A96; font-size:16px;">&rarr;</span>
+      <span style="background:#EDEDFB; color:#3A3AC0; border:1.5px solid #5B5BD6; border-radius:7px; padding:3px 11px; font-weight:700; white-space:nowrap;">2 &middot; Apps</span>
+      <span style="color:#9A9A96; font-size:16px;">&rarr;</span>
+      <span style="background:#EDEDFB; color:#3A3AC0; border:1.5px solid #5B5BD6; border-radius:7px; padding:3px 11px; font-weight:700; white-space:nowrap;">3 &middot; Plan Board</span>
+    </div>
+  </div>
+
+  <!-- ============ APPROACH A ============ -->
+  <div style="width:1440px; margin:0 auto 42px;">
+    <div style="margin-bottom:11px;">
+      <div style="font-size:21px; font-weight:700;">A &middot; Cockpit &mdash; persistent 3-panel</div>
+      <div style="font-size:14px; color:#6E6E6A;">Everything visible at once; selecting cascades left &rarr; right. Dense, but nothing is hidden &mdash; best for power users monitoring many things.</div>
+    </div>
+    <div style="{{ frameStyle }}">
+      <div style="display:flex; height:100%;">
+        <div style="width:230px; flex:none; border-right:1.5px solid #E2E2DE;">
+          <dc-import name="ClientList" clients="{{ clients }}" selected-id="{{ aClient }}" on-select="{{ aSelectClient }}" show-search="{{ true }}" count="{{ clientCount }}" style="width:100%; height:100%;" hint-size="230px,100%"></dc-import>
+        </div>
+        <div style="flex:1; min-width:0; border-right:1.5px solid #E2E2DE;">
+          <dc-import name="AppsTable" client="{{ aClientObj }}" selected-id="{{ aApp }}" on-select="{{ aSelectApp }}" style="width:100%; height:100%;" hint-size="100%,100%"></dc-import>
+        </div>
+        <div style="width:478px; flex:none;">
+          <sc-if value="{{ aHasApp }}" hint-placeholder-val="{{ true }}">
+            <dc-import name="PlanBoard" app="{{ aAppObj }}" show-back="{{ false }}" style="width:100%; height:100%;" hint-size="478px,100%"></dc-import>
+          </sc-if>
+          <sc-if value="{{ aNoApp }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%; display:flex; align-items:center; justify-content:center; color:#9A9A96; font-size:15px; text-align:center; padding:24px;">Select an app &rarr;<br>to see its plan board</div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ APPROACH B ============ -->
+  <div style="width:1440px; margin:0 auto 42px;">
+    <div style="margin-bottom:11px;">
+      <div style="font-size:21px; font-weight:700;">B &middot; Drill-in &mdash; one focused context</div>
+      <div style="font-size:14px; color:#6E6E6A;">Full width, one level at a time. A breadcrumb + Back move you up and down the hierarchy. Calmer, less to scan, scales down to small screens.</div>
+    </div>
+    <div style="{{ frameStyle }}">
+      <div style="height:100%; display:flex; flex-direction:column;">
+        <div style="display:flex; align-items:center; gap:12px; padding:11px 16px; border-bottom:1.5px solid #E2E2DE; background:#FAFAF8;">
+          <sc-if value="{{ bShowBack }}" hint-placeholder-val="{{ false }}">
+            <span onClick="{{ bBack }}" style="cursor:pointer; color:#5B5BD6; font-weight:700; font-size:14px;">&#8592; Back</span>
+          </sc-if>
+          <div style="display:flex; align-items:center; gap:9px; font-size:14.5px; white-space:nowrap;">
+            <span onClick="{{ bGoClients }}" style="{{ bCrumb1Style }}">Clients</span>
+            <sc-if value="{{ bShowCrumb2 }}" hint-placeholder-val="{{ false }}"><span style="color:#B5B5B0;">/</span></sc-if>
+            <sc-if value="{{ bShowCrumb2 }}" hint-placeholder-val="{{ false }}"><span onClick="{{ bGoApps }}" style="{{ bCrumb2Style }}">{{ bClientName }}</span></sc-if>
+            <sc-if value="{{ bShowCrumb3 }}" hint-placeholder-val="{{ false }}"><span style="color:#B5B5B0;">/</span></sc-if>
+            <sc-if value="{{ bShowCrumb3 }}" hint-placeholder-val="{{ false }}"><span style="font-weight:700; color:#2A2A2A;">{{ bAppName }}</span></sc-if>
+          </div>
+        </div>
+        <div style="flex:1; min-height:0;">
+          <sc-if value="{{ bShowClients }}" hint-placeholder-val="{{ true }}">
+            <div style="height:100%; display:flex; flex-direction:column;">
+              <div style="padding:12px 18px 4px; font-size:13px; color:#8C8C88;">Pick a client to drill in &darr;</div>
+              <div style="flex:1; min-height:0;">
+                <dc-import name="ClientList" clients="{{ clients }}" selected-id="{{ bClient }}" on-select="{{ bSelectClient }}" show-search="{{ true }}" show-header="{{ false }}" count="{{ clientCount }}" style="width:100%; height:100%;" hint-size="100%,100%"></dc-import>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ bShowApps }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="AppsTable" client="{{ bClientObj }}" selected-id="{{ bApp }}" on-select="{{ bSelectApp }}" style="width:100%; height:100%;" hint-size="100%,100%"></dc-import>
+          </sc-if>
+          <sc-if value="{{ bShowBoard }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="PlanBoard" app="{{ bAppObj }}" show-back="{{ false }}" style="width:100%; height:100%;" hint-size="100%,100%"></dc-import>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ APPROACH C ============ -->
+  <div style="width:1440px; margin:0 auto 30px;">
+    <div style="margin-bottom:11px;">
+      <div style="font-size:21px; font-weight:700;">C &middot; Workspace + slide-over</div>
+      <div style="font-size:14px; color:#6E6E6A;">Clients rail stays pinned for fast switching; the middle is your working area. Opening an app slides the plan board in from the right as a drawer you can dismiss &mdash; detail on demand, without losing your place.</div>
+    </div>
+    <div style="{{ frameStyleRel }}">
+      <div style="display:flex; height:100%;">
+        <div style="width:230px; flex:none; border-right:1.5px solid #E2E2DE;">
+          <dc-import name="ClientList" clients="{{ clients }}" selected-id="{{ cClient }}" on-select="{{ cSelectClient }}" show-search="{{ true }}" count="{{ clientCount }}" style="width:100%; height:100%;" hint-size="230px,100%"></dc-import>
+        </div>
+        <div style="flex:1; min-width:0;">
+          <dc-import name="AppsTable" client="{{ cClientObj }}" selected-id="{{ cApp }}" on-select="{{ cSelectApp }}" style="width:100%; height:100%;" hint-size="100%,100%"></dc-import>
+        </div>
+      </div>
+      <sc-if value="{{ cDrawerOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ cCloseDrawer }}" style="position:absolute; inset:0; background:rgba(40,40,40,0.26);"></div>
+        <div style="position:absolute; top:0; right:0; bottom:0; width:580px; background:#fff; border-left:2px solid #2A2A2A; box-shadow:-8px 0 24px rgba(0,0,0,0.12);">
+          <dc-import name="PlanBoard" app="{{ cAppObj }}" show-back="{{ true }}" on-back="{{ cCloseDrawer }}" style="width:100%; height:100%;" hint-size="580px,100%"></dc-import>
+        </div>
+      </sc-if>
+    </div>
+    <div style="font-size:13px; color:#8C8C88; margin-top:10px;">&#9758; In approach C, click any app row in the middle to slide the plan board over; click the dimmed area or &ldquo;Back to Apps&rdquo; to dismiss.</div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { aClient: 'A', aApp: 'puzzle', bLevel: 'clients', bClient: null, bApp: null, cClient: 'A', cApp: null };
+
+  buildData() {
+    const labels = ['Installs', 'Ad Revenue', 'eCPM', 'Impressions', 'ARPDAU', 'Show Rate'];
+    const mk = (vals) => labels.map((l, i) => ({ label: l, val: vals[i][0], delta: vals[i][1] }));
+
+    const TEAM = [
+      { initials: 'M', role: 'Monetization Lead', name: 'Neha Verma', color: '#5B5BD6' },
+      { initials: 'A', role: 'ASO Lead', name: 'Arjun Mehta', color: '#3B82C4' },
+      { initials: 'U', role: 'UA Lead', name: 'Karan Singh', color: '#2E9E83' },
+      { initials: 'G', role: 'Growth Lead', name: 'Priya Nair', color: '#E0883A' }
+    ];
+
+    const BOARD_COLUMNS = [
+      { name: 'To Do', count: 3, cards: [
+        { title: 'ASO Keyword Research', tag: 'ASO', date: 'May 20', who: 'A' },
+        { title: 'Create New Screenshots', tag: 'ASO', date: 'May 22', who: 'A' },
+        { title: 'Test New Banner Ad', tag: 'Monetization', date: 'May 23', who: 'M' }
+      ]},
+      { name: 'In Progress', count: 4, cards: [
+        { title: 'Optimize Store Listing', tag: 'ASO', date: 'Due May 18', who: 'A' },
+        { title: 'Facebook UA Campaign', tag: 'UA', date: 'Due May 19', who: 'U' },
+        { title: 'A/B Test Interstitial', tag: 'Monetization', date: 'Due May 21', who: 'M' },
+        { title: 'Push Notification Campaign', tag: 'Growth', date: 'Due May 21', who: 'G' }
+      ]},
+      { name: 'Review', count: 2, cards: [
+        { title: 'Check Ad Placement CTR', tag: 'Monetization', date: 'Due May 17', who: 'M' },
+        { title: 'Review CPI & ROAS', tag: 'UA', date: 'Due May 17', who: 'U' }
+      ]},
+      { name: 'Done', count: 5, cards: [
+        { title: 'Competitor Analysis', tag: 'ASO', date: 'May 14', who: '\u2713', done: true },
+        { title: 'Google Ads Campaign', tag: 'UA', date: 'May 15', who: '\u2713', done: true },
+        { title: 'Feature Graphic Update', tag: 'ASO', date: 'May 13', who: '\u2713', done: true },
+        { title: 'Ad Unit Refresh', tag: 'Monetization', date: 'May 13', who: '\u2713', done: true },
+        { title: 'Event Tracking Setup', tag: 'Growth', date: 'May 12', who: '\u2713', done: true }
+      ]}
+    ];
+    const BOARD_SUMMARY = [
+      { label: 'Total Tasks', val: '14' },
+      { label: 'Completed', val: '5 (35%)' },
+      { label: 'In Progress', val: '4 (29%)' },
+      { label: 'To Do', val: '3 (21%)' },
+      { label: 'In Review', val: '2 (15%)' }
+    ];
+
+    const clients = [
+      { id: 'A', initials: 'PA', name: 'Publisher A', apps: 3, since: 'Jan 2023', revenue: '$28,450', delta: '15.2%' },
+      { id: 'B', initials: 'PB', name: 'Publisher B', apps: 4, since: 'Mar 2023', revenue: '$19,850', delta: '8.7%' },
+      { id: 'C', initials: 'PC', name: 'Publisher C', apps: 2, since: 'May 2023', revenue: '$12,420', delta: '6.1%' },
+      { id: 'D', initials: 'PD', name: 'Publisher D', apps: 5, since: 'Aug 2023', revenue: '$15,230', delta: '11.3%' },
+      { id: 'E', initials: 'PE', name: 'Publisher E', apps: 3, since: 'Oct 2023', revenue: '$9,640', delta: '4.8%' },
+      { id: 'F', initials: 'PF', name: 'Publisher F', apps: 2, since: 'Nov 2023', revenue: '$6,230', delta: '3.2%' },
+      { id: 'G', initials: 'PG', name: 'Publisher G', apps: 4, since: 'Dec 2023', revenue: '$18,780', delta: '12.9%' },
+      { id: 'H', initials: 'PH', name: 'Publisher H', apps: 1, since: 'Jan 2024', revenue: '$4,120', delta: '2.4%' },
+      { id: 'I', initials: 'PI', name: 'Publisher I', apps: 2, since: 'Feb 2024', revenue: '$7,890', delta: '7.5%' },
+      { id: 'J', initials: 'PJ', name: 'Publisher J', apps: 3, since: 'Feb 2024', revenue: '$11,340', delta: '9.1%' }
+    ];
+
+    const detailA = {
+      initials: 'PA', name: 'Publisher A', since: 'Jan 2023', model: 'Ads + IAP', appsCount: 3,
+      apps: [
+        { id: 'star', icon: 'SA', name: 'Star Adventure', pkg: 'com.pubA.star', metrics: mk([['128K','12.4%'],['$12,450','15.3%'],['$3.21','8.7%'],['3.87M','10.2%'],['$0.48','6.1%'],['62.3%','2.4%']]) },
+        { id: 'puzzle', icon: 'PW', name: 'Puzzle World', pkg: 'com.pubA.puzzle', metrics: mk([['95K','8.6%'],['$8,230','11.7%'],['$2.45','6.3%'],['2.91M','9.8%'],['$0.36','4.7%'],['58.1%','1.9%']]) },
+        { id: 'race', icon: 'SR', name: 'Speed Racing', pkg: 'com.pubA.race', metrics: mk([['72K','5.3%'],['$5,770','7.2%'],['$2.18','3.9%'],['2.44M','6.1%'],['$0.29','2.1%'],['55.6%','1.3%']]) }
+      ],
+      summary: [
+        { label: 'Total Revenue', val: '$28,450', delta: '15.2%' },
+        { label: 'Total Installs', val: '295K', delta: '9.8%' },
+        { label: 'Avg eCPM', val: '$2.61', delta: '6.4%' },
+        { label: 'Total Impressions', val: '9.22M', delta: '8.7%' },
+        { label: 'Avg Show Rate', val: '58.7%', delta: '1.9%' },
+        { label: 'Avg ARPDAU', val: '$0.38', delta: '3.2%' }
+      ],
+      team: TEAM
+    };
+
+    const genNames = [['Galaxy Quest','GQ','galaxy'],['Tower Blast','TB','tower'],['Word Mania','WM','word'],['Coin Dash','CD','coin'],['Pixel Farm','PF','pixel']];
+    const genBase = [['64K','7.1%'],['$4,210','6.4%'],['$2.05','4.2%'],['1.82M','5.5%'],['$0.31','3.1%'],['54.2%','1.4%']];
+    const makeGeneric = (c) => {
+      const apps = [];
+      for (let i = 0; i < c.apps; i++) {
+        const g = genNames[i % genNames.length];
+        apps.push({ id: g[2], icon: g[1], name: g[0], pkg: 'com.pub' + c.id + '.' + g[2], metrics: mk(genBase) });
+      }
+      return {
+        initials: c.initials, name: c.name, since: c.since, model: 'Ads + IAP', appsCount: c.apps,
+        apps,
+        summary: [
+          { label: 'Total Revenue', val: c.revenue, delta: c.delta },
+          { label: 'Total Installs', val: (c.apps * 60) + 'K', delta: '7.0%' },
+          { label: 'Avg eCPM', val: '$2.30', delta: '5.0%' },
+          { label: 'Total Impressions', val: (c.apps * 1.8).toFixed(1) + 'M', delta: '6.0%' },
+          { label: 'Avg Show Rate', val: '56.0%', delta: '1.5%' },
+          { label: 'Avg ARPDAU', val: '$0.33', delta: '2.5%' }
+        ],
+        team: TEAM
+      };
+    };
+
+    const detail = {};
+    clients.forEach(c => { detail[c.id] = c.id === 'A' ? detailA : makeGeneric(c); });
+
+    return { clients, detail, BOARD_COLUMNS, BOARD_SUMMARY };
+  }
+
+  get D() { if (!this._d) this._d = this.buildData(); return this._d; }
+
+  appObj(clientId, appId) {
+    const d = this.D.detail[clientId];
+    if (!d) return null;
+    const a = d.apps.find(x => x.id === appId) || d.apps[0];
+    return { icon: a.icon, name: a.name, pkg: a.pkg, metrics: a.metrics, columns: this.D.BOARD_COLUMNS, summary: this.D.BOARD_SUMMARY };
+  }
+  firstApp(clientId) { const d = this.D.detail[clientId]; return d && d.apps[0] ? d.apps[0].id : null; }
+
+  renderVals() {
+    const s = this.state;
+    const D = this.D;
+    const frameStyle = { height: '624px', background: '#fff', border: '2px solid #2A2A2A', borderRadius: '11px', boxShadow: '5px 5px 0 #C9C9C4', overflow: 'hidden' };
+    const frameStyleRel = Object.assign({}, frameStyle, { position: 'relative' });
+
+    // Approach A
+    const aClientObj = D.detail[s.aClient];
+    const aAppObj = s.aApp ? this.appObj(s.aClient, s.aApp) : null;
+
+    // Approach B
+    const bClientObj = s.bClient ? D.detail[s.bClient] : null;
+    const bAppObj = (s.bClient && s.bApp) ? this.appObj(s.bClient, s.bApp) : null;
+    const crumbLink = { cursor: 'pointer', color: '#5B5BD6', fontWeight: 700 };
+    const crumbCur = { color: '#2A2A2A', fontWeight: 700 };
+
+    // Approach C
+    const cClientObj = D.detail[s.cClient];
+    const cAppObj = s.cApp ? this.appObj(s.cClient, s.cApp) : null;
+
+    return {
+      clients: D.clients,
+      clientCount: D.clients.length,
+      frameStyle, frameStyleRel,
+
+      // A
+      aClient: s.aClient,
+      aApp: s.aApp,
+      aClientObj,
+      aAppObj,
+      aHasApp: !!s.aApp,
+      aNoApp: !s.aApp,
+      aSelectClient: (id) => this.setState({ aClient: id, aApp: this.firstApp(id) }),
+      aSelectApp: (id) => this.setState({ aApp: id }),
+
+      // B
+      bClient: s.bClient,
+      bApp: s.bApp,
+      bClientObj,
+      bAppObj,
+      bClientName: bClientObj ? bClientObj.name : '',
+      bAppName: bAppObj ? bAppObj.name : '',
+      bShowClients: s.bLevel === 'clients',
+      bShowApps: s.bLevel === 'apps',
+      bShowBoard: s.bLevel === 'board',
+      bShowBack: s.bLevel !== 'clients',
+      bShowCrumb2: s.bLevel === 'apps' || s.bLevel === 'board',
+      bShowCrumb3: s.bLevel === 'board',
+      bCrumb1Style: s.bLevel === 'clients' ? crumbCur : crumbLink,
+      bCrumb2Style: s.bLevel === 'apps' ? crumbCur : crumbLink,
+      bSelectClient: (id) => this.setState({ bClient: id, bApp: null, bLevel: 'apps' }),
+      bSelectApp: (id) => this.setState({ bApp: id, bLevel: 'board' }),
+      bGoClients: () => this.setState({ bLevel: 'clients' }),
+      bGoApps: () => this.setState({ bLevel: 'apps' }),
+      bBack: () => this.setState({ bLevel: s.bLevel === 'board' ? 'apps' : 'clients' }),
+
+      // C
+      cClient: s.cClient,
+      cApp: s.cApp,
+      cClientObj,
+      cAppObj,
+      cDrawerOpen: !!s.cApp,
+      cSelectClient: (id) => this.setState({ cClient: id, cApp: null }),
+      cSelectApp: (id) => this.setState({ cApp: id }),
+      cCloseDrawer: () => this.setState({ cApp: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

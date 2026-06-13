@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="height:100%; display:flex; flex-direction:column; background:#fff; font-family:'Kalam',cursive; overflow:hidden;">
+  <sc-if value="{{ showHeader }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; align-items:center; gap:8px; padding:14px 14px 8px;">
+      <span style="font-size:19px; font-weight:700; color:#2A2A2A;">Clients</span>
+      <span style="background:#2A2A2A; color:#fff; font-size:12px; padding:1px 9px; border-radius:10px;">{{ count }}</span>
+    </div>
+  </sc-if>
+  <sc-if value="{{ showSearch }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:4px 12px 8px;">
+      <div style="display:flex; align-items:center; gap:8px; border:1.5px solid #D8D8D4; border-radius:8px; padding:7px 10px; color:#9A9A96; font-size:13px;">
+        <span>&#9906;</span><span>Search clients...</span>
+      </div>
+    </div>
+  </sc-if>
+  <div style="flex:1; overflow:auto; padding:6px 10px 12px; display:flex; flex-direction:column; gap:8px;">
+    <sc-for list="{{ rows }}" as="row" hint-placeholder-count="6">
+      <div onClick="{{ row.onClick }}" style="{{ row.rowStyle }}">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="{{ row.avatarStyle }}">{{ row.initials }}</div>
+          <div style="flex:1; min-width:0;">
+            <div style="{{ row.nameStyle }}">{{ row.name }}</div>
+            <div style="font-size:12.5px; color:#8C8C88;">{{ row.meta }}</div>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+          <span style="font-size:13px; color:#5b5b58;">Revenue: {{ row.revenue }}</span>
+          <span style="font-size:12.5px; color:#2E7D46;">&#8593; {{ row.delta }}</span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const clients = p.clients || [];
+    const sel = p.selectedId;
+    const palette = ['#5B5BD6','#3B82C4','#2E9E83','#E0883A','#D8504F','#D86FA0','#7C5BD6','#C98A2B','#4FA3D8','#5BA86B'];
+    const rows = clients.map((c, i) => {
+      const selected = c.id === sel;
+      return {
+        initials: c.initials,
+        name: c.name,
+        revenue: c.revenue,
+        delta: c.delta,
+        meta: c.apps + ' Apps \u00b7 Since ' + c.since,
+        onClick: () => { if (p.onSelect) p.onSelect(c.id); },
+        rowStyle: {
+          cursor: 'pointer',
+          padding: '10px 11px',
+          borderRadius: '8px',
+          border: selected ? '2px solid #5B5BD6' : '1.5px solid #E2E2DE',
+          background: selected ? '#EDEDFB' : '#fff',
+          boxShadow: selected ? '2px 2px 0 #5B5BD6' : 'none'
+        },
+        avatarStyle: {
+          flex: 'none', width: '34px', height: '34px', borderRadius: '8px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: '#fff', fontWeight: 700, fontSize: '13px',
+          background: palette[i % palette.length]
+        },
+        nameStyle: { fontSize: '15px', fontWeight: 700, color: selected ? '#3A3AC0' : '#2A2A2A' }
+      };
+    });
+    return {
+      rows,
+      count: p.count != null ? p.count : clients.length,
+      showHeader: p.showHeader !== false,
+      showSearch: !!p.showSearch
+    };
+  }
+}
+</script>
+</body>
+</html>

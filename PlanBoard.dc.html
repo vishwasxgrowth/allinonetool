@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="height:100%; display:flex; flex-direction:column; background:#fff; font-family:'Kalam',cursive; overflow:hidden;">
+  <div style="padding:12px 16px 10px;">
+    <sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ onBack }}" style="cursor:pointer; color:#5B5BD6; font-size:13.5px; font-weight:700; margin-bottom:9px;">&#8592; Back to Apps</div>
+    </sc-if>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div style="{{ iconStyle }}">{{ app.icon }}</div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:19px; font-weight:700;">{{ app.name }}</div>
+        <div style="font-size:12.5px; color:#8C8C88;">{{ app.pkg }}</div>
+      </div>
+      <span style="border:1.5px solid #5B5BD6; color:#5B5BD6; font-size:12.5px; padding:5px 12px; border-radius:7px; white-space:nowrap;">&#9186; App Overview</span>
+    </div>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:8px; padding:0 16px 11px; border-bottom:1.5px solid #E2E2DE;">
+    <sc-for list="{{ metrics }}" as="m" hint-placeholder-count="6">
+      <div style="border:1.5px solid #E2E2DE; border-radius:7px; padding:7px 9px;">
+        <div style="font-size:10.5px; color:#8C8C88;">{{ m.label }}</div>
+        <div style="font-size:15px; font-weight:700;">{{ m.val }}</div>
+        <div style="font-size:10px; color:#2E7D46;">&#8593; {{ m.delta }}</div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="display:flex; gap:16px; padding:9px 16px 0; border-bottom:1.5px solid #E2E2DE; font-size:13px;">
+    <span style="color:#3A3AC0; font-weight:700; padding-bottom:8px; border-bottom:2.5px solid #5B5BD6;">Plans &amp; Tasks</span>
+    <span style="color:#8C8C88; padding-bottom:8px;">Performance</span>
+    <span style="color:#8C8C88; padding-bottom:8px;">Ad Units</span>
+    <span style="color:#8C8C88; padding-bottom:8px;">Creatives</span>
+    <span style="color:#8C8C88; padding-bottom:8px;">Notes</span>
+    <span style="color:#8C8C88; padding-bottom:8px;">Documents</span>
+  </div>
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 16px 8px;">
+    <span style="font-size:16px; font-weight:700;">Plan Board</span>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <span style="border:1.5px solid #D8D8D4; border-radius:6px; padding:4px 9px; font-size:12px; color:#8C8C88;">&#9881;</span>
+      <span style="border:1.5px solid #D8D8D4; border-radius:6px; padding:4px 10px; font-size:12.5px;">This Week &#8964;</span>
+      <span style="background:#5B5BD6; color:#fff; padding:5px 12px; border-radius:7px; font-size:12.5px;">+ New Plan</span>
+    </div>
+  </div>
+  <div style="flex:1; overflow:auto; padding:4px 16px 14px;">
+    <div style="display:flex; gap:12px; align-items:flex-start; min-width:max-content;">
+      <sc-for list="{{ columns }}" as="col" hint-placeholder-count="4">
+        <div style="width:228px; flex:none; background:#F6F6F4; border:1.5px solid #E2E2DE; border-radius:9px; padding:9px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:9px;">
+            <span style="{{ col.titleStyle }}">{{ col.name }}</span>
+            <span style="color:#8C8C88; font-size:13px;">{{ col.count }}</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <sc-for list="{{ col.cards }}" as="card" hint-placeholder-count="3">
+              <div style="background:#fff; border:1.5px solid #E2E2DE; border-radius:8px; padding:9px;">
+                <div style="font-size:13.5px; font-weight:700; color:#2A2A2A; margin-bottom:8px; line-height:1.25;">{{ card.title }}</div>
+                <span style="{{ card.tagStyle }}">{{ card.tag }}</span>
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px;">
+                  <span style="font-size:11.5px; color:#8C8C88; white-space:nowrap;">{{ card.date }}</span>
+                  <div style="{{ card.whoStyle }}">{{ card.who }}</div>
+                </div>
+              </div>
+            </sc-for>
+            <div style="text-align:center; padding:7px; border:1.5px dashed #D8D8D4; border-radius:7px; color:#8C8C88; font-size:12px;">+ Add Card</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="padding:10px 16px 14px; border-top:1.5px solid #E2E2DE;">
+    <div style="font-size:14px; font-weight:700; margin-bottom:8px;">Plan Summary</div>
+    <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:10px;">
+      <sc-for list="{{ summary }}" as="s" hint-placeholder-count="5">
+        <div style="border:1.5px solid #E2E2DE; border-radius:8px; padding:9px;">
+          <div style="font-size:11.5px; color:#8C8C88;">{{ s.label }}</div>
+          <div style="font-size:16px; font-weight:700;">{{ s.val }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const app = p.app || {};
+    const tagMeta = {
+      ASO: { bg: '#ECECFB', fg: '#5B5BD6' },
+      UA: { bg: '#E1F1ED', fg: '#1F8A6E' },
+      Monetization: { bg: '#FAEFDC', fg: '#B5760A' },
+      Growth: { bg: '#E8F2EA', fg: '#2E7D46' }
+    };
+    const whoColor = { A: '#3B82C4', U: '#2E9E83', M: '#5B5BD6', G: '#E0883A' };
+    const columns = (app.columns || []).map(col => ({
+      name: col.name,
+      count: col.count,
+      titleStyle: { fontSize: '14px', fontWeight: 700, color: col.name === 'Review' ? '#D8504F' : '#2A2A2A' },
+      cards: (col.cards || []).map(card => {
+        const tm = tagMeta[card.tag] || { bg: '#EEE', fg: '#666' };
+        return {
+          title: card.title,
+          tag: card.tag,
+          date: card.date,
+          who: card.who,
+          tagStyle: { display: 'inline-block', padding: '2px 9px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, background: tm.bg, color: tm.fg },
+          whoStyle: { flex: 'none', width: '21px', height: '21px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: '11px', background: card.done ? '#2E7D46' : (whoColor[card.who] || '#8C8C88') }
+        };
+      })
+    }));
+    return {
+      app,
+      metrics: app.metrics || [],
+      columns,
+      summary: app.summary || [],
+      showBack: !!p.showBack,
+      onBack: p.onBack,
+      iconStyle: { flex: 'none', width: '44px', height: '44px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6E6E6A', fontWeight: 700, fontSize: '13px', border: '1.5px dashed #BEBEB9', background: '#F6F6F4' }
+    };
+  }
+}
+</script>
+</body>
+</html>
