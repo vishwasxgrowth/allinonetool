@@ -21,6 +21,8 @@
       @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
       @keyframes glowPulse { 0%,100% { opacity:.5; } 50% { opacity:.9; } }
       @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+      input, textarea { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:9px; color:#E7E9F2; font-family:inherit; font-size:13.5px; padding:9px 12px; width:100%; outline:none; }
+      input:focus, textarea:focus { border-color:rgba(124,124,255,0.6); box-shadow:0 0 0 3px rgba(124,124,255,0.12); }
     </style>
   </helmet>
 
@@ -33,13 +35,13 @@
       <span style="{{ wordmarkStyle }}">XGROWTH</span>
     </div>
     <div style="display:flex; flex-direction:column; gap:3px;">
-      <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg></span><span style="{{ navLabel }}">Dashboard</span></div>
-      <div onClick="{{ noop }}" style="{{ navItemActive }}"><span style="position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:20px; border-radius:3px; background:#9D9DFF; box-shadow:0 0 10px #7C7CFF;"></span><span style="{{ navIconActive }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span><span style="{{ navLabelActive }}">Clients</span></div>
+      <div onClick="{{ goClients }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg></span><span style="{{ navLabel }}">Dashboard</span></div>
+      <div onClick="{{ goClients }}" style="{{ navItemClients }}"><span style="{{ navItemClientsIndicator }}"></span><span style="{{ navIconClients }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span><span style="{{ navLabelClients }}">Clients</span></div>
       <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M9 21V9"></path></svg></span><span style="{{ navLabel }}">Apps</span></div>
       <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></span><span style="{{ navLabel }}">Tasks</span></div>
       <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg></span><span style="{{ navLabel }}">Calendar</span></div>
       <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 14l3-3 3 2 5-6"></path></svg></span><span style="{{ navLabel }}">Reports</span></div>
-      <div onClick="{{ noop }}" style="{{ navItem }}" style-hover="{{ navItemHover }}"><span style="{{ navIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M5 5l2 2M17 17l2 2M2 12h3M19 12h3M5 19l2-2M17 7l2-2"></path></svg></span><span style="{{ navLabel }}">Settings</span></div>
+      <div onClick="{{ goSettings }}" style="{{ navItemSettings }}" style-hover="{{ navItemHover }}"><span style="{{ navItemSettingsIndicator }}"></span><span style="{{ navIconSettings }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M5 5l2 2M17 17l2 2M2 12h3M19 12h3M5 19l2-2M17 7l2-2"></path></svg></span><span style="{{ navLabelSettings }}">Settings</span></div>
     </div>
     <div style="{{ kpiBlock }}">
       <div style="{{ navLabelDim }}; padding:0 4px 4px; letter-spacing:.08em; text-transform:uppercase;">This Week</div>
@@ -58,10 +60,10 @@
     </div>
     <div style="margin-top:auto; padding-top:14px;">
       <div style="display:flex; align-items:center; gap:10px; padding:8px; border-radius:11px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05);">
-        <div style="flex:none; width:34px; height:34px; border-radius:9px; background:linear-gradient(145deg,#3A3F55,#22263a); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:#C9CCDD;">RS</div>
+        <div style="flex:none; width:34px; height:34px; border-radius:9px; background:linear-gradient(145deg,#3A3F55,#22263a); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:#C9CCDD;">{{ profileInitials }}</div>
         <div style="{{ navLabel }}; flex:1; min-width:0;">
-          <div style="font-size:13px; font-weight:600; color:#E7E9F2; white-space:nowrap;">Rohit Sharma</div>
-          <div style="font-size:11px; color:#777C92;">Growth Manager</div>
+          <div style="font-size:13px; font-weight:600; color:#E7E9F2; white-space:nowrap;">{{ profileName }}</div>
+          <div style="font-size:11px; color:#777C92;">{{ profileRole }}</div>
         </div>
       </div>
       <div onClick="{{ toggleNav }}" style="display:flex; align-items:center; gap:9px; padding:9px 10px; margin-top:8px; border-radius:9px; cursor:pointer; color:#777C92; font-size:12.5px;" style-hover="{{ collapseHover }}">
@@ -71,6 +73,7 @@
   </aside>
 
   <!-- CLIENTS RAIL -->
+  <sc-if value="{{ showClientsView }}">
   <section style="width:312px; flex:none; height:100%; display:flex; flex-direction:column; background:#0B0D17; border-right:1px solid rgba(255,255,255,0.06);">
     <div style="padding:22px 20px 14px;">
       <div style="display:flex; align-items:center; gap:10px;">
@@ -128,8 +131,10 @@
       </div>
     </sc-if>
   </section>
+  </sc-if>
 
-  <!-- WORKSPACE -->
+  <!-- WORKSPACE — CLIENTS VIEW -->
+  <sc-if value="{{ showClientsView }}">
   <main style="flex:1; min-width:0; height:100%; overflow-y:auto; background:radial-gradient(1100px 600px at 18% -8%, rgba(124,124,255,0.08), transparent 60%), #080912;">
     <div style="max-width:1080px; margin:0 auto; padding:30px 40px 60px;">
       <div style="display:flex; align-items:center; gap:18px;">
@@ -148,8 +153,8 @@
         </div>
       </div>
       <div style="display:flex; gap:26px; margin-top:26px; border-bottom:1px solid rgba(255,255,255,0.07);">
-        <span style="{{ wsTabIdle }}">Overview</span>
-        <span style="{{ wsTabActive }}">Apps</span>
+        <span style="{{ wsTabActive }}">Overview</span>
+        <span style="{{ wsTabIdle }}">Apps</span>
         <span style="{{ wsTabIdle }}">Team</span>
         <span style="{{ wsTabIdle }}">Notes</span>
         <span style="{{ wsTabIdle }}">Documents</span>
@@ -215,6 +220,122 @@
       </div>
     </div>
   </main>
+  </sc-if>
+
+  <!-- SETTINGS VIEW -->
+  <sc-if value="{{ showSettingsView }}">
+  <main style="flex:1; min-width:0; height:100%; overflow-y:auto; background:radial-gradient(1100px 600px at 18% -8%, rgba(124,124,255,0.08), transparent 60%), #080912;">
+    <div style="max-width:760px; margin:0 auto; padding:36px 40px 80px;">
+      <div style="font-size:28px; font-weight:800; letter-spacing:-0.02em; margin-bottom:6px;">Settings</div>
+      <div style="font-size:13px; color:#777C92; margin-bottom:36px;">Configure your profile, client info, and team. Changes are saved locally in your browser.</div>
+
+      <!-- SAVE BANNER -->
+      <sc-if value="{{ settingsSaved }}">
+        <div style="display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:12px; background:rgba(69,212,131,0.1); border:1px solid rgba(69,212,131,0.3); margin-bottom:24px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#45D483" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <span style="font-size:13px; color:#45D483; font-weight:600;">Settings saved successfully</span>
+        </div>
+      </sc-if>
+
+      <!-- SECTION: MY PROFILE -->
+      <div style="margin-bottom:32px;">
+        <div style="font-size:16px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:9px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C7CFF" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          My Profile
+        </div>
+        <div style="padding:22px; border-radius:16px; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.07); display:flex; flex-direction:column; gap:16px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div>
+              <div style="font-size:11.5px; color:#777C92; margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;">Your Name</div>
+              <input value="{{ settingsForm.profileName }}" onInput="{{ onProfileName }}" placeholder="e.g. Vishwas Sharma">
+            </div>
+            <div>
+              <div style="font-size:11.5px; color:#777C92; margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;">Your Role</div>
+              <input value="{{ settingsForm.profileRole }}" onInput="{{ onProfileRole }}" placeholder="e.g. Growth Manager">
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11.5px; color:#777C92; margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;">Preview</div>
+            <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:11px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); width:fit-content;">
+              <div style="flex:none; width:34px; height:34px; border-radius:9px; background:linear-gradient(145deg,#3A3F55,#22263a); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:#C9CCDD;">{{ profileInitials }}</div>
+              <div>
+                <div style="font-size:13px; font-weight:600; color:#E7E9F2;">{{ settingsForm.profileName }}</div>
+                <div style="font-size:11px; color:#777C92;">{{ settingsForm.profileRole }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: CLIENT INFO -->
+      <div style="margin-bottom:32px;">
+        <div style="font-size:16px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:9px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C7CFF" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          Client Info
+        </div>
+        <div style="padding:22px; border-radius:16px; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.07); display:flex; flex-direction:column; gap:16px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div>
+              <div style="font-size:11.5px; color:#777C92; margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;">Client Name</div>
+              <input value="{{ settingsForm.clientName }}" onInput="{{ onClientName }}" placeholder="e.g. XGrowth Apps">
+            </div>
+            <div>
+              <div style="font-size:11.5px; color:#777C92; margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;">Since</div>
+              <input value="{{ settingsForm.clientSince }}" onInput="{{ onClientSince }}" placeholder="e.g. Jan 2023">
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11.5px; color:#777C92; margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;">Business Model</div>
+            <input value="{{ settingsForm.clientModel }}" onInput="{{ onClientModel }}" placeholder="e.g. Ads, Ads + IAP, Subscription">
+          </div>
+          <div>
+            <div style="font-size:11.5px; color:#777C92; margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;">Apps Script URL</div>
+            <input value="{{ settingsForm.apiUrl }}" onInput="{{ onApiUrl }}" placeholder="https://script.google.com/macros/s/.../exec">
+            <div style="font-size:11px; color:#5E6377; margin-top:6px;">Your deployed Google Apps Script web app URL for live AdMob data</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: TEAM -->
+      <div style="margin-bottom:32px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+          <div style="font-size:16px; font-weight:700; display:flex; align-items:center; gap:9px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C7CFF" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Team Members
+          </div>
+          <div onClick="{{ addTeamMember }}" style="display:flex; align-items:center; gap:6px; padding:7px 14px; border-radius:9px; background:rgba(124,124,255,0.15); border:1px solid rgba(124,124,255,0.3); color:#A9AAFF; font-size:12.5px; font-weight:600; cursor:pointer;" style-hover="{{ addMemberHover }}">
+            + Add Member
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <sc-for list="{{ settingsForm.team }}" as="tm" hint-placeholder-count="3">
+            <div style="display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:14px; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.07);">
+              <div style="{{ tm.avatarStyle }}">{{ tm.initials }}</div>
+              <div style="flex:1; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <input value="{{ tm.name }}" onInput="{{ tm.onName }}" placeholder="Full Name">
+                <input value="{{ tm.role }}" onInput="{{ tm.onRole }}" placeholder="Role (e.g. Monetization Lead)">
+              </div>
+              <div onClick="{{ tm.onRemove }}" style="flex:none; width:32px; height:32px; border-radius:9px; border:1px solid rgba(242,97,110,0.25); display:flex; align-items:center; justify-content:center; color:#F2616E; cursor:pointer; font-size:16px;" style-hover="{{ removeMemberHover }}">&#215;</div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noTeamMembers }}">
+            <div style="padding:24px; text-align:center; border:1px dashed rgba(255,255,255,0.1); border-radius:14px; color:#5E6377; font-size:13px;">No team members yet. Click "+ Add Member" to add your first.</div>
+          </sc-if>
+        </div>
+      </div>
+
+      <!-- SAVE BUTTON -->
+      <div style="display:flex; gap:12px;">
+        <div onClick="{{ saveSettings }}" style="display:flex; align-items:center; gap:8px; padding:0 28px; height:44px; border-radius:12px; background:linear-gradient(140deg,#7C7CFF,#5B4BE0); color:#fff; font-weight:700; font-size:14px; cursor:pointer; box-shadow:0 8px 22px -8px rgba(124,124,255,0.8);" style-hover="{{ primaryHover }}">
+          Save Settings
+        </div>
+        <div onClick="{{ resetSettings }}" style="display:flex; align-items:center; padding:0 20px; height:44px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); color:#9499AE; font-size:13.5px; cursor:pointer;" style-hover="{{ ghostHover }}">
+          Reset to Default
+        </div>
+      </div>
+    </div>
+  </main>
+  </sc-if>
 
   <!-- SLIDE-OVER -->
   <div onClick="{{ closeSlide }}" style="{{ backdropStyle }}"></div>
@@ -317,29 +438,60 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   state = {
-    navCollapsed: false, client: 'A', app: null, slideOpen: false, tab: 'plans',
+    navCollapsed: false, currentView: 'clients', client: 'A', app: null, slideOpen: false, tab: 'plans',
     board: null, dragOverCol: null,
     isLoading: true, hasError: false, errorMessage: '', lastUpdated: null,
     usingLiveData: false, liveClients: null, liveApps: null, liveSummary: null, liveWeekKpis: null,
+    settingsSaved: false,
+    settingsForm: this.loadSettings(),
   };
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // ONLY THING YOU NEED TO EDIT:
-  // Paste your Google Apps Script Web App URL below (between the quotes).
-  // It looks like: https://script.google.com/macros/s/AKfy.../exec
-  SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbykxWYx0Eb8Uxj4HfqCqKjp27LH1w3LcEqxrehAC5RrR7-tDlvtyn287tIgivkn8vaGFw/exec';
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SHEET_API_URL = '';
 
-  componentDidMount() { this.loadData(); }
+  loadSettings() {
+    const defaults = {
+      profileName: 'Your Name',
+      profileRole: 'Growth Manager',
+      clientName: 'Publisher A',
+      clientSince: 'Jan 2023',
+      clientModel: 'Ads',
+      apiUrl: 'https://script.google.com/macros/s/AKfycbykxWYx0Eb8Uxj4HfqCqKjp27LH1w3LcEqxrehAC5RrR7-tDlvtyn287tIgivkn8vaGFw/exec',
+      team: [
+        { name: 'Neha Verma',  role: 'Monetization Lead', color: '#7C7CFF' },
+        { name: 'Arjun Mehta', role: 'ASO Lead',           color: '#5BA8F5' },
+        { name: 'Karan Singh', role: 'UA Lead',            color: '#2DD4BF' },
+        { name: 'Priya Nair',  role: 'Growth Lead',        color: '#F4A862' },
+      ],
+    };
+    try {
+      const saved = typeof localStorage !== 'undefined' && localStorage.getItem('xgrowth_settings');
+      if (saved) return Object.assign({}, defaults, JSON.parse(saved));
+    } catch(e) {}
+    return defaults;
+  }
+
+  persistSettings(form) {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('xgrowth_settings', JSON.stringify(form));
+      }
+    } catch(e) {}
+  }
+
+  componentDidMount() {
+    this.SHEET_API_URL = this.state.settingsForm.apiUrl || '';
+    this.loadData();
+  }
 
   async loadData() {
-    if (this.SHEET_API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    const url = this.SHEET_API_URL || this.state.settingsForm.apiUrl;
+    if (!url || url === 'YOUR_APPS_SCRIPT_URL_HERE') {
       this.setState({ isLoading: false, usingLiveData: false });
       return;
     }
     this.setState({ isLoading: true, hasError: false });
     try {
-      const res = await fetch(this.SHEET_API_URL + '?action=all');
+      const res = await fetch(url + '?action=all');
       if (!res.ok) throw new Error('Server returned ' + res.status);
       const json = await res.json();
       if (json.error) throw new Error(json.error);
@@ -349,27 +501,61 @@ class Component extends DCLogic {
         liveSummary: json.summary || null, liveWeekKpis: json.weekKpis || null,
       });
     } catch (e) {
-      this.setState({ isLoading: false, hasError: true, usingLiveData: false, errorMessage: e.message || 'Unknown error. Check your Apps Script URL.' });
+      this.setState({ isLoading: false, hasError: true, usingLiveData: false, errorMessage: e.message || 'Unknown error.' });
     }
   }
 
+  saveSettings() {
+    const form = this.state.settingsForm;
+    this.persistSettings(form);
+    this.SHEET_API_URL = form.apiUrl;
+    this.setState({ settingsSaved: true, currentView: 'clients' });
+    setTimeout(() => this.setState({ settingsSaved: false }), 3000);
+    this.loadData();
+  }
+
+  resetSettings() {
+    try { if (typeof localStorage !== 'undefined') localStorage.removeItem('xgrowth_settings'); } catch(e) {}
+    this.setState({ settingsForm: this.loadSettings(), settingsSaved: false });
+  }
+
+  updateForm(key, val) {
+    this.setState(s => ({ settingsForm: Object.assign({}, s.settingsForm, { [key]: val }) }));
+  }
+
+  updateTeamMember(idx, key, val) {
+    this.setState(s => {
+      const team = s.settingsForm.team.map((m, i) => i === idx ? Object.assign({}, m, { [key]: val }) : m);
+      return { settingsForm: Object.assign({}, s.settingsForm, { team }) };
+    });
+  }
+
+  addTeamMember() {
+    const colors = ['#7C7CFF','#5BA8F5','#2DD4BF','#F4A862','#F2616E','#E06FB0'];
+    this.setState(s => {
+      const team = [...s.settingsForm.team, { name: '', role: '', color: colors[s.settingsForm.team.length % colors.length] }];
+      return { settingsForm: Object.assign({}, s.settingsForm, { team }) };
+    });
+  }
+
+  removeTeamMember(idx) {
+    this.setState(s => {
+      const team = s.settingsForm.team.filter((_, i) => i !== idx);
+      return { settingsForm: Object.assign({}, s.settingsForm, { team }) };
+    });
+  }
+
   buildFallbackData() {
-    const labels = ['Installs','Ad Revenue','eCPM','Impressions','ARPDAU','Show Rate'];
-    const mk = (vals) => labels.map((l,i) => ({ label:l, val:vals[i][0], delta:'▲ '+vals[i][1] }));
     const spark = (seed) => { let v=(seed%6)+6,out=[]; for(let i=0;i<12;i++){v+=(Math.sin(seed*1.3+i*0.9)*2.4)+0.4;v=Math.max(3,Math.min(19,v));out.push((i*(64/11)).toFixed(1)+','+(22-v).toFixed(1));} return out.join(' '); };
     const spark2 = (seed) => { let v=(seed%5)+8,out=[]; for(let i=0;i<14;i++){v+=(Math.sin(seed*0.7+i)*2.8)+0.5;v=Math.max(4,Math.min(26,v));out.push((i*(74/13)).toFixed(1)+','+(30-v).toFixed(1));} return out.join(' '); };
-    const TEAM = [
-      {initials:'M',role:'Monetization Lead',name:'Neha Verma',color:'#7C7CFF'},
-      {initials:'A',role:'ASO Lead',name:'Arjun Mehta',color:'#5BA8F5'},
-      {initials:'U',role:'UA Lead',name:'Karan Singh',color:'#2DD4BF'},
-      {initials:'G',role:'Growth Lead',name:'Priya Nair',color:'#F4A862'}
-    ];
     const BOARD = [
       {name:'To Do',cards:[{id:'t1',title:'ASO Keyword Research',tag:'ASO',date:'May 20',who:'A'},{id:'t2',title:'Create New Screenshots',tag:'ASO',date:'May 22',who:'A'},{id:'t3',title:'Test New Banner Ad',tag:'Monetization',date:'May 23',who:'M'}]},
       {name:'In Progress',cards:[{id:'p1',title:'Optimize Store Listing',tag:'ASO',date:'Due May 18',who:'A'},{id:'p2',title:'Facebook UA Campaign',tag:'UA',date:'Due May 19',who:'U'},{id:'p3',title:'A/B Test Interstitial',tag:'Monetization',date:'Due May 21',who:'M'},{id:'p4',title:'Push Notification Campaign',tag:'Growth',date:'Due May 21',who:'G'}]},
       {name:'Review',cards:[{id:'r1',title:'Check Ad Placement CTR',tag:'Monetization',date:'Due May 17',who:'M'},{id:'r2',title:'Review CPI & ROAS',tag:'UA',date:'Due May 17',who:'U'}]},
-      {name:'Done',cards:[{id:'d1',title:'Competitor Analysis',tag:'ASO',date:'May 14',who:'\u2713',done:true},{id:'d2',title:'Google Ads Campaign',tag:'UA',date:'May 15',who:'\u2713',done:true},{id:'d3',title:'Feature Graphic Update',tag:'ASO',date:'May 13',who:'\u2713',done:true},{id:'d4',title:'Ad Unit Refresh',tag:'Monetization',date:'May 13',who:'\u2713',done:true}]}
+      {name:'Done',cards:[{id:'d1',title:'Competitor Analysis',tag:'ASO',date:'May 14',who:'\u2713',done:true},{id:'d2',title:'Google Ads Campaign',tag:'UA',date:'May 15',who:'\u2713',done:true}]}
     ];
+    const labels = ['Installs','Ad Revenue','eCPM','Impressions','ARPDAU','Show Rate'];
+    const mk = (vals) => labels.map((l,i) => ({ label:l, val:vals[i][0], delta:'▲ '+vals[i][1] }));
     const clients = [{id:'A',initials:'PA',name:'Publisher A',apps:3,since:'Jan 2023',revenue:'$28,450',delta:'▲ 15.2%'}];
     const detailA = {
       initials:'PA',name:'Publisher A',since:'Jan 2023',model:'Ads + IAP',appsCount:3,
@@ -379,7 +565,6 @@ class Component extends DCLogic {
         {id:'race',icon:'SR',name:'Speed Racing',pkg:'com.pubA.race',metrics:mk([['72K','5.3%'],['$5,770','7.2%'],['$2.18','3.9%'],['2.44M','6.1%'],['$0.29','2.1%'],['55.6%','1.3%']]),seed:11}
       ],
       summary:[{label:'Total Revenue',val:'$28,450',delta:'▲ 15.2%'},{label:'Total Installs',val:'295K',delta:'▲ 9.8%'},{label:'Avg eCPM',val:'$2.61',delta:'▲ 6.4%'},{label:'Total Impressions',val:'9.22M',delta:'▲ 8.7%'},{label:'Avg Show Rate',val:'58.7%',delta:'▲ 1.9%'},{label:'Avg ARPDAU',val:'$0.38',delta:'▲ 3.2%'}],
-      team:TEAM
     };
     const weekKpis=[{label:'Revenue',val:'$124,560',delta:'▲ 14.6%',spark:spark(2)},{label:'Impressions',val:'42.7M',delta:'▲ 9.3%',spark:spark(5)},{label:'eCPM',val:'$2.91',delta:'▲ 6.5%',spark:spark(8)},{label:'Fill Rate',val:'78.3%',delta:'▲ 3.1%',spark:spark(3)}];
     return {clients,detail:{A:detailA},BOARD,weekKpis,spark,spark2};
@@ -387,31 +572,11 @@ class Component extends DCLogic {
 
   get D() { if(!this._d) this._d=this.buildFallbackData(); return this._d; }
 
-  makeSpark(dailyRevenues,maxH,width) {
-    if(!dailyRevenues||!dailyRevenues.length) return this.D.spark(3);
-    const vals=dailyRevenues.map(Number).filter(n=>!isNaN(n));
-    if(!vals.length) return '';
-    const mx=Math.max(...vals)||1;
-    const h=maxH||22; const w=width||64;
-    return vals.map((v,i)=>((i/(vals.length-1))*w).toFixed(1)+','+(h-(v/mx)*(h-3)).toFixed(1)).join(' ');
-  }
-
-  buildLiveClients(liveClients) {
-    const palette=['#7C7CFF','#5BA8F5','#2DD4BF','#F4A862','#F2616E','#E06FB0','#9D7CF0','#D9A33A'];
-    return liveClients.map((c,i) => {
-      const sel=c.id===this.state.client;
-      return {
-        id:c.id, initials:c.initials||(c.name||'').slice(0,2).toUpperCase(),
-        name:c.name, revenue:c.revenue, delta:c.delta||'—',
-        meta:(c.apps||'?')+' Apps · Since '+(c.since||'—'),
-        spark:this.makeSpark(c.dailyRevenue,22,64), sparkColor:sel?'#B9B9FF':'rgba(124,124,255,0.55)',
-        onClick:()=>this.selectClient(c.id),
-        cardStyle:{cursor:'pointer',padding:'14px',borderRadius:'15px',border:sel?'1px solid rgba(124,124,255,0.6)':'1px solid rgba(255,255,255,0.06)',background:sel?'linear-gradient(160deg,rgba(124,124,255,0.16),rgba(124,124,255,0.04))':'rgba(255,255,255,0.022)',boxShadow:sel?'0 0 0 1px rgba(124,124,255,0.25),0 14px 30px -16px rgba(124,124,255,0.8)':'none',transition:'border-color .15s,background .15s,transform .15s'},
-        cardHover:sel?null:{cursor:'pointer',padding:'14px',borderRadius:'15px',border:'1px solid rgba(255,255,255,0.14)',background:'rgba(255,255,255,0.05)',transform:'translateY(-1px)'},
-        avatarStyle:{flex:'none',width:'40px',height:'40px',borderRadius:'12px',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontWeight:700,fontSize:'14px',background:'linear-gradient(150deg,'+palette[i%palette.length]+',rgba(0,0,0,0.25))',boxShadow:'0 4px 12px -4px '+palette[i%palette.length]+'88'},
-        nameStyle:{fontSize:'15px',fontWeight:700,color:sel?'#EDEDFF':'#E7E9F2',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}
-      };
-    });
+  makeSpark(vals,maxH,width) {
+    if(!vals||!vals.length) return this.D.spark(3);
+    const v2=vals.map(Number).filter(n=>!isNaN(n)); if(!v2.length) return '';
+    const mx=Math.max(...v2)||1; const h=maxH||22; const w=width||64;
+    return v2.map((v,i)=>((i/(v2.length-1))*w).toFixed(1)+','+(h-(v/mx)*(h-3)).toFixed(1)).join(' ');
   }
 
   cloneBoard() { return this.D.BOARD.map(c=>({name:c.name,cards:c.cards.map(x=>Object.assign({},x))})); }
@@ -420,13 +585,15 @@ class Component extends DCLogic {
   closeSlide() { this.setState({slideOpen:false}); clearTimeout(this._t); this._t=setTimeout(()=>this.setState({app:null}),380); }
   toggleNav() { this.setState(s=>({navCollapsed:!s.navCollapsed})); }
   refreshData() { this.loadData(); }
+  goSettings() { this.setState({ currentView: 'settings' }); }
+  goClients() { this.setState({ currentView: 'clients' }); }
 
   moveCard(toCol) {
     const id=this._drag; if(!id) return;
     const board=(this.state.board||this.cloneBoard());
     let moved=null;
     board.forEach(col=>{const i=col.cards.findIndex(c=>c.id===id);if(i>-1){moved=col.cards.splice(i,1)[0];}});
-    if(moved){const t=board.find(c=>c.name===toCol);if(t){moved.done=(toCol==='Done');moved.who=moved.done?'\u2713':(moved._who||moved.who);if(!moved.done&&moved.who==='\u2713')moved.who='A';t.cards.push(moved);}}
+    if(moved){const t=board.find(c=>c.name===toCol);if(t){moved.done=(toCol==='Done');t.cards.push(moved);}}
     this.setState({board,dragOverCol:null});
   }
 
@@ -442,20 +609,33 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const s=this.state,D=this.D;
+    const s=this.state, D=this.D, form=s.settingsForm;
     const collapsed=s.navCollapsed;
-    const isLoading=s.isLoading;
-    const hasError=s.hasError&&!s.isLoading;
-    const showClients=!isLoading&&!hasError;
+    const isSettings=s.currentView==='settings';
+    const isClients=s.currentView==='clients';
 
+    // Profile
+    const pName = form.profileName || 'Your Name';
+    const pRole = form.profileRole || 'Role';
+    const profileInitials = pName.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase() || 'YN';
+
+    // Nav styles
     const navStyle={width:collapsed?'74px':'256px',flex:'none',height:'100%',display:'flex',flexDirection:'column',padding:collapsed?'20px 14px':'20px 16px',background:'#0C0E1A',borderRight:'1px solid rgba(255,255,255,0.06)',overflow:'hidden'};
-    const navItem={position:'relative',display:'flex',alignItems:'center',gap:'12px',padding:collapsed?'11px 0':'11px 12px',justifyContent:collapsed?'center':'flex-start',borderRadius:'11px',cursor:'pointer',color:'#8A90A6',fontSize:'13.5px',fontWeight:500};
-    const navItemHover=Object.assign({},navItem,{background:'rgba(255,255,255,0.045)',color:'#D7DAE8'});
-    const navItemActive=Object.assign({},navItem,{background:'rgba(124,124,255,0.13)',color:'#E9E9FF',fontWeight:600});
+    const navBase={position:'relative',display:'flex',alignItems:'center',gap:'12px',padding:collapsed?'11px 0':'11px 12px',justifyContent:collapsed?'center':'flex-start',borderRadius:'11px',cursor:'pointer',fontSize:'13.5px',fontWeight:500};
+    const navItem=Object.assign({},navBase,{color:'#8A90A6'});
+    const navItemHover=Object.assign({},navBase,{background:'rgba(255,255,255,0.045)',color:'#D7DAE8'});
+    const navActive=Object.assign({},navBase,{background:'rgba(124,124,255,0.13)',color:'#E9E9FF',fontWeight:600});
+    const indicator={position:'absolute',left:0,top:'50%',transform:'translateY(-50%)',width:'3px',height:'20px',borderRadius:'3px',background:'#9D9DFF',boxShadow:'0 0 10px #7C7CFF'};
+    const navItemClients=isClients?navActive:navItem;
+    const navItemSettings=isSettings?navActive:navItem;
+    const navItemClientsIndicator=isClients?indicator:{display:'none'};
+    const navItemSettingsIndicator=isSettings?indicator:{display:'none'};
     const navIcon={flex:'none',display:'flex',color:'inherit'};
-    const navIconActive=Object.assign({},navIcon,{color:'#B9B9FF'});
+    const navIconClients=Object.assign({},navIcon,{color:isClients?'#B9B9FF':'inherit'});
+    const navIconSettings=Object.assign({},navIcon,{color:isSettings?'#B9B9FF':'inherit'});
     const navLabel={display:collapsed?'none':'block',whiteSpace:'nowrap'};
-    const navLabelActive=Object.assign({},navLabel);
+    const navLabelClients=Object.assign({},navLabel);
+    const navLabelSettings=Object.assign({},navLabel);
     const navLabelDim={display:collapsed?'none':'block',fontSize:'10px',color:'#5E6377',fontWeight:600};
     const wordmarkStyle={display:collapsed?'none':'block',fontSize:'18px',fontWeight:800,letterSpacing:'0.06em'};
     const kpiBlock={display:collapsed?'none':'block',marginTop:'22px',paddingTop:'18px',borderTop:'1px solid rgba(255,255,255,0.06)'};
@@ -464,36 +644,64 @@ class Component extends DCLogic {
 
     const weekKpis=(s.usingLiveData&&s.liveWeekKpis)?s.liveWeekKpis:D.weekKpis;
 
+    // Clients list
     const palette=['#7C7CFF','#5BA8F5','#2DD4BF','#F4A862','#F2616E','#E06FB0','#9D7CF0','#D9A33A'];
     let clients;
     if(s.usingLiveData&&s.liveClients){
-      clients=this.buildLiveClients(s.liveClients);
+      clients=s.liveClients.map((c,i)=>{
+        const sel=c.id===s.client;
+        return {
+          id:c.id, initials:(c.name||'').slice(0,2).toUpperCase(), name:c.name,
+          revenue: typeof c.revenue==='number' ? '$'+c.revenue.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : (c.revenue||'—'),
+          delta:'▲ live', meta:(c.apps||'?')+' Apps · Since '+(c.since||'—'),
+          spark:this.makeSpark(c.dailyRevenue,22,64), sparkColor:sel?'#B9B9FF':'rgba(124,124,255,0.55)',
+          onClick:()=>this.selectClient(c.id),
+          cardStyle:{cursor:'pointer',padding:'14px',borderRadius:'15px',border:sel?'1px solid rgba(124,124,255,0.6)':'1px solid rgba(255,255,255,0.06)',background:sel?'linear-gradient(160deg,rgba(124,124,255,0.16),rgba(124,124,255,0.04))':'rgba(255,255,255,0.022)',boxShadow:sel?'0 0 0 1px rgba(124,124,255,0.25),0 14px 30px -16px rgba(124,124,255,0.8)':'none'},
+          cardHover:sel?null:{cursor:'pointer',padding:'14px',borderRadius:'15px',border:'1px solid rgba(255,255,255,0.14)',background:'rgba(255,255,255,0.05)',transform:'translateY(-1px)'},
+          avatarStyle:{flex:'none',width:'40px',height:'40px',borderRadius:'12px',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontWeight:700,fontSize:'14px',background:'linear-gradient(150deg,'+palette[i%palette.length]+',rgba(0,0,0,0.25))'},
+          nameStyle:{fontSize:'15px',fontWeight:700,color:sel?'#EDEDFF':'#E7E9F2',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}
+        };
+      });
     } else {
       clients=D.clients.map((c,i)=>{
         const sel=c.id===s.client;
         return {
-          initials:c.initials,name:c.name,revenue:c.revenue,delta:c.delta,
-          meta:c.apps+' Apps · Since '+c.since,
+          initials:c.initials,name:form.clientName||c.name,revenue:c.revenue,delta:c.delta,
+          meta:c.apps+' Apps · Since '+(form.clientSince||c.since),
           spark:D.spark(i+1),sparkColor:sel?'#B9B9FF':'rgba(124,124,255,0.55)',
           onClick:()=>this.selectClient(c.id),
-          cardStyle:{cursor:'pointer',padding:'14px',borderRadius:'15px',border:sel?'1px solid rgba(124,124,255,0.6)':'1px solid rgba(255,255,255,0.06)',background:sel?'linear-gradient(160deg,rgba(124,124,255,0.16),rgba(124,124,255,0.04))':'rgba(255,255,255,0.022)',boxShadow:sel?'0 0 0 1px rgba(124,124,255,0.25),0 14px 30px -16px rgba(124,124,255,0.8)':'none',transition:'border-color .15s,background .15s,transform .15s'},
+          cardStyle:{cursor:'pointer',padding:'14px',borderRadius:'15px',border:sel?'1px solid rgba(124,124,255,0.6)':'1px solid rgba(255,255,255,0.06)',background:sel?'linear-gradient(160deg,rgba(124,124,255,0.16),rgba(124,124,255,0.04))':'rgba(255,255,255,0.022)',boxShadow:sel?'0 0 0 1px rgba(124,124,255,0.25),0 14px 30px -16px rgba(124,124,255,0.8)':'none'},
           cardHover:sel?null:{cursor:'pointer',padding:'14px',borderRadius:'15px',border:'1px solid rgba(255,255,255,0.14)',background:'rgba(255,255,255,0.05)',transform:'translateY(-1px)'},
-          avatarStyle:{flex:'none',width:'40px',height:'40px',borderRadius:'12px',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontWeight:700,fontSize:'14px',background:'linear-gradient(150deg,'+palette[i%palette.length]+',rgba(0,0,0,0.25))',boxShadow:'0 4px 12px -4px '+palette[i%palette.length]+'88'},
+          avatarStyle:{flex:'none',width:'40px',height:'40px',borderRadius:'12px',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontWeight:700,fontSize:'14px',background:'linear-gradient(150deg,'+palette[i%palette.length]+',rgba(0,0,0,0.25))'},
           nameStyle:{fontSize:'15px',fontWeight:700,color:sel?'#EDEDFF':'#E7E9F2',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}
         };
       });
     }
 
+    // Client workspace
     let client,summary,apps;
     if(s.usingLiveData&&s.liveClients){
       const lc=s.liveClients.find(c=>c.id===s.client)||s.liveClients[0]||{};
-      client={initials:lc.initials||(lc.name||'').slice(0,2).toUpperCase(),name:lc.name||'—',since:lc.since||'—',model:lc.model||'Ads',appsCount:lc.apps||0};
-      summary=s.liveSummary&&s.liveSummary[s.client]?s.liveSummary[s.client]:[];
+      client={initials:(lc.name||'').slice(0,2).toUpperCase(),name:lc.name||'—',since:lc.since||'—',model:lc.model||'Ads',appsCount:lc.apps||0};
+      const rawSummary=s.liveSummary;
+      summary=rawSummary?[
+        {label:'Total Revenue',    val:'$'+(rawSummary.revenue||0).toLocaleString(),       delta:'▲ live'},
+        {label:'Total Impressions',val:(rawSummary.impressions||0).toLocaleString(),        delta:'▲ live'},
+        {label:'Avg eCPM',         val:'$'+(rawSummary.ecpm||0).toFixed(2),               delta:'▲ live'},
+        {label:'Total Clicks',     val:(rawSummary.clicks||0).toLocaleString(),            delta:'▲ live'},
+        {label:'Avg CTR',          val:(rawSummary.ctr||0).toFixed(2)+'%',                delta:'▲ live'},
+        {label:'Active Apps',      val:String(rawSummary.apps||0),                         delta:''},
+      ]:[];
       const rawApps=s.liveApps?s.liveApps.filter(a=>a.clientId===s.client):[];
       apps=rawApps.map(a=>({
-        icon:a.icon||a.name.slice(0,2).toUpperCase(),name:a.name,pkg:a.pkg,
+        icon:(a.name||'').slice(0,2).toUpperCase(), name:a.name, pkg:a.id,
         spark:this.makeSpark(a.dailyRevenue,30,74),
-        headline:a.metrics?[a.metrics[0],a.metrics[1],a.metrics[2],a.metrics[4]]:[],
+        headline:[
+          {label:'Ad Revenue',  val:'$'+(a.revenue||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}), delta:'▲ live'},
+          {label:'Impressions', val:(a.impressions||0).toLocaleString(),  delta:'▲ live'},
+          {label:'eCPM',        val:'$'+(a.ecpm||0).toFixed(2),          delta:'▲ live'},
+          {label:'Match Rate',  val:(a.matchRate||0).toFixed(1)+'%',     delta:'▲ live'},
+        ],
         onClick:()=>this.openApp(a.id),
         cardStyle:{cursor:'pointer',padding:'18px 20px',borderRadius:'17px',background:'rgba(255,255,255,0.022)',border:'1px solid rgba(255,255,255,0.06)',transition:'border-color .15s,background .15s,transform .15s'},
         cardHover:{cursor:'pointer',padding:'18px 20px',borderRadius:'17px',background:'rgba(124,124,255,0.06)',border:'1px solid rgba(124,124,255,0.4)',transform:'translateY(-2px)'},
@@ -501,7 +709,8 @@ class Component extends DCLogic {
       }));
     } else {
       const fd=D.detail[s.client];
-      client=fd;summary=fd.summary;
+      client={initials:(form.clientName||fd.name).slice(0,2).toUpperCase(),name:form.clientName||fd.name,since:form.clientSince||fd.since,model:form.clientModel||fd.model,appsCount:fd.appsCount};
+      summary=fd.summary;
       apps=fd.apps.map(a=>({
         icon:a.icon,name:a.name,pkg:a.pkg,spark:D.spark2(a.seed),
         headline:[a.metrics[0],a.metrics[1],a.metrics[2],a.metrics[4]],
@@ -512,25 +721,42 @@ class Component extends DCLogic {
       }));
     }
 
-    const TEAM=D.detail.A.team;
-    const team=TEAM.map(t=>({initials:t.initials,role:t.role,name:t.name,avatarStyle:{flex:'none',width:'36px',height:'36px',borderRadius:'11px',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontWeight:700,fontSize:'13px',background:'linear-gradient(150deg,'+t.color+',rgba(0,0,0,0.3))'}}));
+    // Team — from settings
+    const teamColors=['#7C7CFF','#5BA8F5','#2DD4BF','#F4A862','#F2616E','#E06FB0'];
+    const team=(form.team||[]).filter(t=>t.name||t.role).map((t,i)=>({
+      initials:(t.name||'?').split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase(),
+      role:t.role||'—', name:t.name||'—',
+      avatarStyle:{flex:'none',width:'36px',height:'36px',borderRadius:'11px',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontWeight:700,fontSize:'13px',background:'linear-gradient(150deg,'+(t.color||teamColors[i%teamColors.length])+',rgba(0,0,0,0.3))'}
+    }));
+
+    // Settings form team rows
+    const settingsTeam=(form.team||[]).map((tm,i)=>({
+      name:tm.name, role:tm.role,
+      initials:(tm.name||'?').split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?',
+      avatarStyle:{flex:'none',width:'36px',height:'36px',borderRadius:'9px',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontWeight:700,fontSize:'13px',background:'linear-gradient(150deg,'+(tm.color||teamColors[i%teamColors.length])+',rgba(0,0,0,0.3))'},
+      onName:(e)=>this.updateTeamMember(i,'name',e.target.value),
+      onRole:(e)=>this.updateTeamMember(i,'role',e.target.value),
+      onRemove:()=>this.removeTeamMember(i),
+    }));
 
     const lu=s.lastUpdated;
     const lastUpdatedLabel=lu?'Updated '+lu.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):(s.usingLiveData?'':'Preview data');
     const dataSourceDot=s.usingLiveData?'#45D483':'#F4A862';
-    const dataSourceLabel=s.usingLiveData?'Live · AdMob via Google Sheets':'Preview · Paste your Apps Script URL to load live data';
-    const refreshHover={background:'rgba(124,124,255,0.12)',borderRadius:'6px'};
+    const dataSourceLabel=s.usingLiveData?'Live · AdMob via Google Sheets':'Preview · Configure your Apps Script URL in Settings';
 
     const chip={fontSize:'12px',color:'#9499AE',padding:'4px 11px',borderRadius:'20px',background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.07)'};
     const pubAvatarStyle={flex:'none',width:'64px',height:'64px',borderRadius:'18px',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontWeight:800,fontSize:'23px',background:'linear-gradient(150deg,#7C7CFF,#5B4BE0)',boxShadow:'0 10px 30px -10px rgba(124,124,255,0.9)'};
     const wsTabActive={paddingBottom:'13px',fontSize:'14px',fontWeight:700,color:'#E7E9F2',borderBottom:'2px solid #7C7CFF',cursor:'pointer'};
     const wsTabIdle={paddingBottom:'13px',fontSize:'14px',fontWeight:500,color:'#777C92',cursor:'pointer'};
-    const ghostHover={background:'rgba(255,255,255,0.06)'};
-    const primaryHover={filter:'brightness(1.08)'};
+    const ghostHover={background:'rgba(255,255,255,0.06)',cursor:'pointer'};
+    const primaryHover={filter:'brightness(1.08)',cursor:'pointer'};
+    const refreshHover={background:'rgba(124,124,255,0.12)',borderRadius:'6px'};
+    const addMemberHover={background:'rgba(124,124,255,0.22)',cursor:'pointer'};
+    const removeMemberHover={background:'rgba(242,97,110,0.12)',cursor:'pointer'};
 
     const open=s.slideOpen;
     const backdropStyle={position:'absolute',inset:0,background:'rgba(5,6,12,0.55)',backdropFilter:'blur(3px)',WebkitBackdropFilter:'blur(3px)',opacity:open?1:0,pointerEvents:open?'auto':'none',transition:'opacity .38s'};
-    const panelStyle={position:'absolute',top:0,right:0,bottom:0,width:'660px',maxWidth:'92%',background:'#0C0E1A',borderLeft:'1px solid rgba(124,124,255,0.25)',boxShadow:'-30px 0 80px -20px rgba(0,0,0,0.7),-1px 0 0 rgba(124,124,255,0.3)',transform:open?'translateX(0)':'translateX(102%)',transition:'transform .42s cubic-bezier(.4,0,.1,1)',zIndex:5};
+    const panelStyle={position:'absolute',top:0,right:0,bottom:0,width:'660px',maxWidth:'92%',background:'#0C0E1A',borderLeft:'1px solid rgba(124,124,255,0.25)',boxShadow:'-30px 0 80px -20px rgba(0,0,0,0.7)',transform:open?'translateX(0)':'translateX(102%)',transition:'transform .42s cubic-bezier(.4,0,.1,1)',zIndex:5};
     const openAppObj=s.app?this.appObj(s.client,s.app):{icon:'',name:'',pkg:'',metrics:[]};
     const soIconStyle={flex:'none',width:'52px',height:'52px',borderRadius:'15px',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:'16px',color:'#C7CAE0',background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.1)'};
     const soTab=(id)=>(s.tab===id?{paddingBottom:'12px',fontSize:'13px',fontWeight:700,color:'#E7E9F2',borderBottom:'2px solid #7C7CFF',cursor:'pointer'}:{paddingBottom:'12px',fontSize:'13px',fontWeight:500,color:'#777C92',cursor:'pointer'});
@@ -541,7 +767,7 @@ class Component extends DCLogic {
     const columns=board.map(col=>{
       const over=s.dragOverCol===col.name;
       return {
-        name:col.name,count:col.cards.length,
+        name:col.name, count:col.cards.length,
         titleStyle:{fontSize:'14px',fontWeight:700,color:col.name==='Review'?'#F6BE7C':(col.name==='Done'?'#74E7A0':'#E7E9F2')},
         colStyle:{width:'236px',flex:'none',background:over?'rgba(124,124,255,0.08)':'rgba(255,255,255,0.018)',border:over?'1px solid rgba(124,124,255,0.5)':'1px solid rgba(255,255,255,0.06)',borderRadius:'14px',padding:'13px',transition:'background .15s,border-color .15s'},
         onDragOver:(e)=>{e.preventDefault();},
@@ -553,7 +779,7 @@ class Component extends DCLogic {
             title:card.title,tag:card.tag,date:card.date,who:card.who,
             onDragStart:(e)=>{this._drag=card.id;if(e.dataTransfer)e.dataTransfer.effectAllowed='move';},
             onDragEnd:()=>{this._drag=null;if(s.dragOverCol)this.setState({dragOverCol:null});},
-            cardStyle:{cursor:'grab',padding:'13px',borderRadius:'12px',background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.07)',transition:'border-color .15s,transform .12s'},
+            cardStyle:{cursor:'grab',padding:'13px',borderRadius:'12px',background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.07)'},
             cardHover:{cursor:'grab',padding:'13px',borderRadius:'12px',background:'rgba(255,255,255,0.065)',border:'1px solid rgba(124,124,255,0.4)',transform:'translateY(-1px)'},
             tagStyle:{display:'inline-block',padding:'3px 10px',borderRadius:'7px',fontSize:'11px',fontWeight:700,background:tm.bg,color:tm.fg},
             whoStyle:{flex:'none',width:'23px',height:'23px',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontWeight:700,fontSize:'11px',background:card.done?'#3BA66A':(whoColor[card.who]||'#666')}
@@ -562,7 +788,7 @@ class Component extends DCLogic {
       };
     });
     const counts={};board.forEach(c=>counts[c.name]=c.cards.length);
-    const total=(counts['To Do']||0)+(counts['In Progress']||0)+(counts['Review']||0)+(counts['Done']||0);
+    const total=Object.values(counts).reduce((a,b)=>a+b,0);
     const pct=(n)=>total?Math.round(n/total*100)+'%':'0%';
     const planSummary=[
       {label:'Total Tasks',val:String(total),color:'#EDEEF6'},
@@ -571,26 +797,44 @@ class Component extends DCLogic {
       {label:'To Do',val:(counts['To Do']||0)+' ('+pct(counts['To Do']||0)+')',color:'#9499AE'},
       {label:'In Review',val:(counts['Review']||0)+' ('+pct(counts['Review']||0)+')',color:'#F6BE7C'}
     ];
-    const otherMeta={performance:['Performance','Revenue, eCPM and impression trends for this app will live here.'],adunits:['Ad Units','Banner, interstitial and rewarded placements with live fill rates.'],creatives:['Creatives','Creative variants, A/B test results and asset library.'],notes:['Notes','Shared notes and context for this app, by the growth team.']};
+    const otherMeta={performance:['Performance','Revenue, eCPM and impression trends.'],adunits:['Ad Units','Banner, interstitial and rewarded placements.'],creatives:['Creatives','Creative variants and A/B test results.'],notes:['Notes','Shared notes for this app.']};
     const om=otherMeta[s.tab]||['',''];
 
     return {
       noop:()=>{},
-      navStyle,navItem,navItemHover,navItemActive,navIcon,navIconActive,navLabel,navLabelActive,navLabelDim,wordmarkStyle,kpiBlock,collapseIcon,collapseHover,
-      toggleNav:()=>this.toggleNav(),weekKpis,
-      isLoading,hasError,showClients,errorMessage:s.errorMessage,
-      lastUpdatedLabel,refreshData:()=>this.refreshData(),refreshHover,
-      dataSourceDot,dataSourceLabel,
-      clients,clientCount:(s.usingLiveData&&s.liveClients)?s.liveClients.length:(D.clients||[]).length,
-      client,chip,pubAvatarStyle,apps,team,summary,
-      wsTabActive,wsTabIdle,ghostHover,primaryHover,
-      backdropStyle,panelStyle,openAppObj,soIconStyle,
+      navStyle,navItem,navItemHover,navItemClients,navItemSettings,
+      navItemClientsIndicator,navItemSettingsIndicator,
+      navIcon,navIconClients,navIconSettings,
+      navLabel,navLabelClients,navLabelSettings,navLabelDim,wordmarkStyle,kpiBlock,collapseIcon,collapseHover,
+      toggleNav:()=>this.toggleNav(), goSettings:()=>this.goSettings(), goClients:()=>this.goClients(),
+      weekKpis, profileInitials, profileName:pName, profileRole:pRole,
+      showClientsView:isClients, showSettingsView:isSettings,
+      isLoading:s.isLoading, hasError:s.hasError&&!s.isLoading, showClients:!s.isLoading&&!s.hasError,
+      errorMessage:s.errorMessage, lastUpdatedLabel, refreshData:()=>this.refreshData(), refreshHover,
+      dataSourceDot, dataSourceLabel,
+      clients, clientCount:clients.length,
+      client, chip, pubAvatarStyle, apps, team, summary,
+      wsTabActive, wsTabIdle, ghostHover, primaryHover,
+      backdropStyle, panelStyle, openAppObj, soIconStyle,
       closeSlide:()=>this.closeSlide(),
       tabPlans:()=>this.setState({tab:'plans'}),tabPerf:()=>this.setState({tab:'performance'}),tabUnits:()=>this.setState({tab:'adunits'}),tabCreatives:()=>this.setState({tab:'creatives'}),tabNotes:()=>this.setState({tab:'notes'}),
       soTabPlans:soTab('plans'),soTabPerf:soTab('performance'),soTabUnits:soTab('adunits'),soTabCreatives:soTab('creatives'),soTabNotes:soTab('notes'),
-      showPlans:s.tab==='plans',showOther:s.tab!=='plans',otherTitle:om[0],otherSub:om[1],
-      columns,planSummary,
-      backHover:{color:'#C7C7FF'},addCardHover:{background:'rgba(255,255,255,0.04)',color:'#9499AE'}
+      showPlans:s.tab==='plans', showOther:s.tab!=='plans', otherTitle:om[0], otherSub:om[1],
+      columns, planSummary, addCardHover:{background:'rgba(255,255,255,0.04)',color:'#9499AE'}, backHover:{color:'#C7C7FF'},
+      // Settings
+      settingsSaved:s.settingsSaved,
+      settingsForm:Object.assign({},s.settingsForm,{team:settingsTeam}),
+      noTeamMembers:(form.team||[]).length===0,
+      onProfileName:(e)=>this.updateForm('profileName',e.target.value),
+      onProfileRole:(e)=>this.updateForm('profileRole',e.target.value),
+      onClientName:(e)=>this.updateForm('clientName',e.target.value),
+      onClientSince:(e)=>this.updateForm('clientSince',e.target.value),
+      onClientModel:(e)=>this.updateForm('clientModel',e.target.value),
+      onApiUrl:(e)=>this.updateForm('apiUrl',e.target.value),
+      addTeamMember:()=>this.addTeamMember(),
+      saveSettings:()=>this.saveSettings(),
+      resetSettings:()=>this.resetSettings(),
+      addMemberHover, removeMemberHover,
     };
   }
 }
