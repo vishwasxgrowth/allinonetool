@@ -1,21 +1,17 @@
 // ============================================================
 // XGROWTH CONSOLE — Google Apps Script
-// Reads from Google Sheet (dummy or real AdMob export)
-// and serves JSON to the XGrowth Console UI
+// Reads real AdMob export format from Google Sheet
+// Column names match AdMob's actual export headers exactly
 // ============================================================
-
-// ── CONFIGURATION ───────────────────────────────────────────
 
 var SPREADSHEET_ID = '1nnn3vTdekcOD3u3GcBgA2EfXmCPXWqlWJjpVhH7yrBw';
 
 var CLIENT = {
-  id:      'A',
-  name:    'Acme Apps',
-  since:   'Jan 2023',
-  model:   'Ads + IAP',
+  id:    'A',
+  name:  'XGrowth Portfolio',
+  since: 'Jan 2023',
+  model: 'Ads',
 };
-
-// ── ENTRY POINT ─────────────────────────────────────────────
 
 function doGet(e) {
   try {
@@ -30,17 +26,13 @@ function doGet(e) {
   }
 }
 
-// ── MAIN BUILD FUNCTION ──────────────────────────────────────
-
 function buildAllData() {
   var ss      = SpreadsheetApp.openById(SPREADSHEET_ID);
   var netRows = readSheet(ss, 'network_report');
   var medRows = readSheet(ss, 'mediation_report');
-
   var byApp   = aggregateByApp(netRows);
   var byFmt   = aggregateByFormat(medRows);
   var daily   = aggregateDaily(netRows);
-
   return {
     clients:  buildClients(byApp, daily),
     apps:     buildApps(byApp, byFmt, daily),
@@ -49,284 +41,184 @@ function buildAllData() {
   };
 }
 
-// ── READ A SHEET TAB INTO ARRAY OF OBJECTS ───────────────────
-
 function readSheet(ss, sheetName) {
-  var sheet  = ss.getSheetByName(sheetName);
+  var sheet = ss.getSheetByName(sheetName);
   if (!sheet) throw new Error('Sheet not found: ' + sheetName);
   var values = sheet.getDataRange().getValues();
   if (values.length < 2) return [];
-
   var headers = values[0].map(function(h) { return String(h).trim(); });
-  var rows    = [];
+  var rows = [];
   for (var i = 1; i < values.length; i++) {
     var row = {};
     headers.forEach(function(h, j) { row[h] = values[i][j]; });
-    // Skip completely empty rows
-    if (!row['app_id'] || row['app_id'] === '') continue;
+    var appName = String(row['App'] || '').trim();
+    if (!appName || appName === '' || appName === '\u2014') continue;
     rows.push(row);
   }
   return rows;
 }
 
-// ── AGGREGATE network_report BY APP ─────────────────────────
-
 function aggregateByApp(rows) {
   var byApp = {};
   rows.forEach(function(r) {
-    var id   = String(r['app_id']).trim();
-    var name = String(r['app_name']).trim();
-    if (!byApp[id]) {
-      byApp[id] = {
-        id:               id,
-        name:             name,
-        earn:             0,   // sum of estimated_earnings (micros)
-        impressions:      0,
-        clicks:           0,
-        adRequests:       0,
-        matchedRequests:  0,
-        rpmSum:           0,   // to average eCPM
-        ctrSum:           0,
-        matchRateSum:     0,
-        rowCount:         0,
+    var name = String(r['App']).trim();
+    if (!byApp[name]) {
+      byApp[name] = {
+        id: slugify(name), name: name,
+        earn: 0, impressions: 0, clicks: 0,
+        requests: 0, matchedRequests: 0,
+        ecpmSum: 0, ctrSum: 0, matchRateSum: 0, rowCount: 0,
       };
     }
-    var a = byApp[id];
-    a.earn            += num(r['estimated_earnings']);
-    a.impressions     += num(r['impressions']);
-    a.clicks          += num(r['clicks']);
-    a.adRequests      += num(r['ad_requests']);
-    a.matchedRequests += num(r['matched_requests']);
-    a.rpmSum          += num(r['impression_rpm']);
-    a.ctrSum          += num(r['impression_ctr']);
-    a.matchRateSum    += num(r['match_rate']);
-    a.rowCount++;
+    var a = byApp[name];
+    a.earn            += num(r['Estimated earnings (USD)']);
+    a.impressions     += num(r['Impressions']);
+    a.clicks          += num(r['Clicks']);
+    a.requests        += num(r['Requests']);
+    a.matchedRequests += num(r['Matched requests']);
+    a.ecpmSum         += num(r['Observed eCPM (USD)']);
+    a.ctrSum          += pct(r['CTR']);
+    a.matchRateSum    += pct(r['Match rate']);
+    a.rowCount        += 1;
   });
   return byApp;
 }
 
-// ── AGGREGATE mediation_report BY APP + FORMAT ───────────────
-
 function aggregateByFormat(rows) {
-  // Returns: { app_id: { FORMAT: { earn, impressions, rpm, ctr, matchRate } } }
-  var byFmt = {};
+  var byApp = {};
   rows.forEach(function(r) {
-    var id  = String(r['app_id']).trim();
-    var fmt = String(r['format']).trim();
-    if (!byFmt[id]) byFmt[id] = {};
-    if (!byFmt[id][fmt]) byFmt[id][fmt] = { earn:0, impressions:0, rpmSum:0, ctrSum:0, matchRateSum:0, rowCount:0 };
-    var f = byFmt[id][fmt];
-    f.earn         += num(r['estimated_earnings']);
-    f.impressions  += num(r['impressions']);
-    f.rpmSum       += num(r['impression_rpm']);
-    f.ctrSum       += num(r['impression_ctr']);
-    f.matchRateSum += num(r['match_rate']);
-    f.rowCount++;
+    var name = String(r['App']).trim();
+    var fmt  = String(r['Format'] || '').trim().toUpperCase();
+    if (!fmt || fmt === '\u2014') return;
+    if (!byApp[name]) byApp[name] = {};
+    if (!byApp[name][fmt]) byApp[name][fmt] = { earn: 0, impressions: 0 };
+    byApp[name][fmt].earn        += num(r['Estimated earnings (USD)']);
+    byApp[name][fmt].impressions += num(r['Impressions']);
   });
-  return byFmt;
+  return byApp;
 }
-
-// ── AGGREGATE DAILY TOTALS (for spark lines) ─────────────────
 
 function aggregateDaily(rows) {
-  // Returns: { app_id: { date: earn_in_dollars } }
-  // Also builds overall daily total across all apps
   var byAppDate = {};
-  var allDates  = {};
-
   rows.forEach(function(r) {
-    var id   = String(r['app_id']).trim();
-    var date = String(r['date']).trim();
-    var earn = num(r['estimated_earnings']) / 1e6;
-
-    if (!byAppDate[id]) byAppDate[id] = {};
-    byAppDate[id][date] = (byAppDate[id][date] || 0) + earn;
-    allDates[date]      = (allDates[date] || 0) + earn;
+    var name = String(r['App']).trim();
+    var dateRaw = r['Date'];
+    var dateStr = (dateRaw instanceof Date)
+      ? Utilities.formatDate(dateRaw, 'UTC', 'yyyy-MM-dd')
+      : String(dateRaw).trim().substring(0, 10);
+    if (!byAppDate[name]) byAppDate[name] = {};
+    byAppDate[name][dateStr] = (byAppDate[name][dateStr] || 0) + num(r['Estimated earnings (USD)']);
   });
-
-  // Sort dates and convert to arrays
-  var sortedDates = Object.keys(allDates).sort();
-
-  var result = { _allDates: sortedDates, _allEarnings: sortedDates.map(function(d){return allDates[d];}) };
-  Object.keys(byAppDate).forEach(function(id) {
-    result[id] = sortedDates.map(function(d) { return byAppDate[id][d] || 0; });
+  var result = {};
+  Object.keys(byAppDate).forEach(function(name) {
+    var dates = Object.keys(byAppDate[name]).sort();
+    result[name] = dates.map(function(d) { return { date: d, earn: round2(byAppDate[name][d]) }; });
   });
   return result;
 }
-
-// ── BUILD: clients array ─────────────────────────────────────
 
 function buildClients(byApp, daily) {
-  var totalEarn = 0;
-  Object.keys(byApp).forEach(function(id) { totalEarn += byApp[id].earn; });
-
-  return [{
-    id:           CLIENT.id,
-    name:         CLIENT.name,
-    initials:     initials(CLIENT.name),
-    since:        CLIENT.since,
-    model:        CLIENT.model,
-    apps:         Object.keys(byApp).length,
-    revenue:      '$' + dollars(totalEarn),
-    delta:        '▲ live',
-    dailyRevenue: daily._allEarnings || [],
-  }];
+  var totalEarn = 0, totalImpr = 0;
+  var appNames = Object.keys(byApp);
+  appNames.forEach(function(n) { totalEarn += byApp[n].earn; totalImpr += byApp[n].impressions; });
+  var allDates = {};
+  appNames.forEach(function(n) { (daily[n] || []).forEach(function(d) { allDates[d.date] = true; }); });
+  var sortedDates = Object.keys(allDates).sort();
+  var dailyEarn = sortedDates.map(function(date) {
+    var sum = 0;
+    appNames.forEach(function(n) { (daily[n] || []).forEach(function(d) { if (d.date === date) sum += d.earn; }); });
+    return round2(sum);
+  });
+  return [{ id: CLIENT.id, name: CLIENT.name, since: CLIENT.since, model: CLIENT.model,
+    revenue: round2(totalEarn), impressions: totalImpr, apps: appNames.length, dailyRevenue: dailyEarn }];
 }
-
-// ── BUILD: apps array ────────────────────────────────────────
 
 function buildApps(byApp, byFmt, daily) {
-  return Object.keys(byApp).map(function(id) {
-    var a    = byApp[id];
-    var n    = a.rowCount || 1;
-    var earn = a.earn / 1e6;
-    var ecpm = (a.rpmSum / n) / 1e6;
-    var ctr  = (a.ctrSum / n) * 100;
-    var fill = (a.matchRateSum / n) * 100;
-
-    // Format breakdown for Ad Units tab
-    var fmtData  = byFmt[id] || {};
-    var formats  = ['BANNER','INTERSTITIAL','REWARDED','REWARDED_INTERSTITIAL','NATIVE','APP_OPEN'];
-    var adUnits  = formats.filter(function(f){return fmtData[f];}).map(function(fmt) {
-      var f  = fmtData[fmt];
-      var fn = f.rowCount || 1;
-      return {
-        format:      fmt,
-        revenue:     '$' + dollars(f.earn),
-        impressions: formatNum(f.impressions),
-        ecpm:        '$' + (((f.rpmSum/fn)/1e6)).toFixed(2),
-        ctr:         ((f.ctrSum/fn)*100).toFixed(2) + '%',
-        fillRate:    ((f.matchRateSum/fn)*100).toFixed(1) + '%',
-      };
+  var apps = [];
+  Object.keys(byApp).forEach(function(name) {
+    var a = byApp[name];
+    var ecpm = a.rowCount > 0 ? a.ecpmSum / a.rowCount : 0;
+    var ctr  = a.rowCount > 0 ? a.ctrSum  / a.rowCount : 0;
+    var mr   = a.rowCount > 0 ? a.matchRateSum / a.rowCount : 0;
+    var fmtData = byFmt[name] || {};
+    var formats = {};
+    Object.keys(fmtData).forEach(function(fmt) {
+      formats[fmt] = { earn: round2(fmtData[fmt].earn), impressions: fmtData[fmt].impressions };
     });
-
-    return {
-      id:           id,
-      clientId:     CLIENT.id,
-      name:         a.name,
-      pkg:          id,
-      icon:         initials(a.name),
-      dailyRevenue: daily[id] || [],
-      adUnits:      adUnits,
-      metrics: [
-        { label:'Ad Revenue',   val:'$' + dollars(a.earn),          delta:'▲ live' },
-        { label:'Impressions',  val:formatNum(a.impressions),        delta:'▲ live' },
-        { label:'eCPM',         val:'$' + ecpm.toFixed(2),          delta:'▲ live' },
-        { label:'CTR',          val:ctr.toFixed(2) + '%',           delta:'▲ live' },
-        { label:'Fill Rate',    val:fill.toFixed(1) + '%',          delta:'▲ live' },
-        { label:'Ad Requests',  val:formatNum(a.adRequests),        delta:'▲ live' },
-      ],
-    };
+    apps.push({
+      id: a.id, clientId: CLIENT.id, name: name,
+      revenue: round2(a.earn), impressions: a.impressions, clicks: a.clicks,
+      requests: a.requests, ecpm: round2(ecpm),
+      ctr: round2(ctr * 100), matchRate: round2(mr * 100),
+      formats: formats,
+      dailyRevenue: (daily[name] || []).map(function(d) { return d.earn; }),
+    });
   });
+  apps.sort(function(x, y) { return y.revenue - x.revenue; });
+  return apps;
 }
-
-// ── BUILD: summary block (shown in workspace) ────────────────
 
 function buildSummary(byApp) {
-  var totalEarn = 0, totalImpr = 0, totalReq = 0, totalMatched = 0;
-  var ecpmSum   = 0, fillSum   = 0, n = 0;
-
-  Object.keys(byApp).forEach(function(id) {
-    var a = byApp[id];
-    totalEarn    += a.earn;
-    totalImpr    += a.impressions;
-    totalReq     += a.adRequests;
-    totalMatched += a.matchedRequests;
-    ecpmSum      += a.rpmSum / (a.rowCount || 1);
-    fillSum      += a.matchRateSum / (a.rowCount || 1);
-    n++;
+  var totalEarn = 0, totalImpr = 0, totalClicks = 0, ecpmVals = [], ctrVals = [];
+  Object.keys(byApp).forEach(function(n) {
+    var a = byApp[n];
+    totalEarn += a.earn; totalImpr += a.impressions; totalClicks += a.clicks;
+    if (a.rowCount > 0) { ecpmVals.push(a.ecpmSum / a.rowCount); ctrVals.push(a.ctrSum / a.rowCount); }
   });
-
-  var avgEcpm = n ? (ecpmSum / n) / 1e6 : 0;
-  var avgFill = n ? (fillSum / n) * 100  : 0;
-  var overall = totalReq ? (totalMatched / totalReq) * 100 : 0;
-
-  var result = {};
-  result[CLIENT.id] = [
-    { label:'Total Revenue',    val:'$' + dollars(totalEarn),    delta:'▲ live' },
-    { label:'Total Impressions',val:formatNum(totalImpr),         delta:'▲ live' },
-    { label:'Avg eCPM',         val:'$' + avgEcpm.toFixed(2),    delta:'▲ live' },
-    { label:'Avg Fill Rate',    val:avgFill.toFixed(1) + '%',    delta:'▲ live' },
-    { label:'Overall Match Rate',val:overall.toFixed(1) + '%',   delta:'▲ live' },
-    { label:'Active Apps',      val:String(n),                    delta:''       },
-  ];
-  return result;
+  var avg = function(arr) { return arr.length ? arr.reduce(function(s,v){return s+v;},0)/arr.length : 0; };
+  return { revenue: round2(totalEarn), impressions: totalImpr, clicks: totalClicks,
+    ecpm: round2(avg(ecpmVals)), ctr: round2(avg(ctrVals) * 100), apps: Object.keys(byApp).length };
 }
-
-// ── BUILD: weekKpis for nav sidebar ─────────────────────────
 
 function buildWeekKpis(byApp, daily) {
-  var totalEarn = 0, totalImpr = 0, ecpmSum = 0, fillSum = 0, n = 0;
-  Object.keys(byApp).forEach(function(id) {
-    var a = byApp[id];
-    totalEarn += a.earn;
-    totalImpr += a.impressions;
-    ecpmSum   += a.rpmSum / (a.rowCount || 1);
-    fillSum   += a.matchRateSum / (a.rowCount || 1);
-    n++;
+  var allRevByDate = {};
+  Object.keys(byApp).forEach(function(n) {
+    (daily[n] || []).forEach(function(d) { allRevByDate[d.date] = (allRevByDate[d.date] || 0) + d.earn; });
   });
-
-  var avgEcpm    = n ? (ecpmSum/n)/1e6 : 0;
-  var avgFill    = n ? (fillSum/n)*100  : 0;
-  var revSpark   = makeSpark(daily._allEarnings || [], 64, 22);
-  var imprSpark  = makeSpark((daily._allEarnings||[]).map(function(v){return v*1000;}), 64, 22);
-
+  var sorted = Object.keys(allRevByDate).sort();
+  var n = sorted.length;
+  var recent = sorted.slice(Math.max(0, n-7)).reduce(function(s,d){return s+allRevByDate[d];},0);
+  var prev   = sorted.slice(Math.max(0,n-14),Math.max(0,n-7)).reduce(function(s,d){return s+allRevByDate[d];},0);
+  var trend  = prev > 0 ? round2((recent-prev)/prev*100) : 0;
+  var totalImpr = 0;
+  Object.keys(byApp).forEach(function(n) { totalImpr += byApp[n].impressions; });
+  var ecpmVals = Object.keys(byApp).map(function(n) {
+    var a = byApp[n]; return a.rowCount > 0 ? a.ecpmSum/a.rowCount : 0;
+  }).filter(function(v){return v>0;});
+  var avgEcpm = ecpmVals.length ? ecpmVals.reduce(function(s,v){return s+v;},0)/ecpmVals.length : 0;
   return [
-    { label:'Revenue',     val:'$' + dollars(totalEarn),    delta:'▲ live', spark:revSpark  },
-    { label:'Impressions', val:formatNum(totalImpr),         delta:'▲ live', spark:imprSpark },
-    { label:'Avg eCPM',    val:'$' + avgEcpm.toFixed(2),    delta:'▲ live', spark:revSpark  },
-    { label:'Fill Rate',   val:avgFill.toFixed(1) + '%',    delta:'▲ live', spark:imprSpark },
+    { label: 'Revenue (7d)', value: '$' + round2(recent).toFixed(2), trend: trend },
+    { label: 'Impressions',  value: fmtNum(totalImpr), trend: 0 },
+    { label: 'Avg eCPM',     value: '$' + round2(avgEcpm).toFixed(2), trend: 0 },
+    { label: 'Active Apps',  value: String(Object.keys(byApp).length), trend: 0 },
   ];
 }
 
-// ── HELPERS ──────────────────────────────────────────────────
-
 function num(v) {
-  var n = parseFloat(String(v).replace(/[^0-9.\-]/g, ''));
+  if (v === null || v === undefined || v === '') return 0;
+  var n = parseFloat(String(v).replace(/[,%]/g, ''));
   return isNaN(n) ? 0 : n;
 }
-
-function dollars(micros) {
-  var v = micros / 1e6;
-  if (v >= 1e6) return (v/1e6).toFixed(2) + 'M';
-  if (v >= 1e3) return (v/1e3).toFixed(1) + 'K';
-  return v.toFixed(2);
+function pct(v) {
+  if (v === null || v === undefined || v === '') return 0;
+  var s = String(v).trim();
+  if (s.indexOf('%') !== -1) return parseFloat(s.replace('%','')) / 100;
+  var n = parseFloat(s);
+  return isNaN(n) ? 0 : (n > 1.1 ? n/100 : n);
 }
-
-function formatNum(n) {
-  if (n >= 1e9) return (n/1e9).toFixed(1) + 'B';
-  if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
-  if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
-  return String(Math.round(n));
+function round2(v) { return Math.round(v * 100) / 100; }
+function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+function fmtNum(n) {
+  if (n >= 1e9) return (n/1e9).toFixed(1)+'B';
+  if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
+  return String(n);
 }
-
-function initials(name) {
-  return (name || '').split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase();
-}
-
-function makeSpark(vals, w, h) {
-  if (!vals || !vals.length) return '';
-  var mx = Math.max.apply(null, vals) || 1;
-  return vals.map(function(v, i) {
-    return (i / (vals.length - 1) * w).toFixed(1) + ',' + (h - (v/mx) * (h-3)).toFixed(1);
-  }).join(' ');
-}
-
-// ── TEST — run this inside Apps Script to verify ─────────────
 
 function testSetup() {
-  try {
-    var data = buildAllData();
-    Logger.log('✅ Clients:  ' + data.clients.length);
-    Logger.log('✅ Apps:     ' + data.apps.length);
-    Logger.log('✅ Revenue:  ' + (data.clients[0] ? data.clients[0].revenue : '—'));
-    Logger.log('✅ KPIs:     ' + data.weekKpis.length);
-    Logger.log('✅ App names: ' + data.apps.map(function(a){return a.name;}).join(', '));
-    data.apps.forEach(function(a) {
-      Logger.log('   ' + a.name + ' → ' + a.metrics[0].val + ' revenue, ' + a.adUnits.length + ' ad formats');
-    });
-  } catch(e) {
-    Logger.log('❌ Error: ' + e.message);
-  }
+  var data = buildAllData();
+  Logger.log('Apps: ' + data.apps.length);
+  Logger.log('Revenue: $' + data.summary.revenue);
+  Logger.log('Impressions: ' + data.summary.impressions);
+  if (data.apps.length > 0) Logger.log('Top app: ' + data.apps[0].name + ' ($' + data.apps[0].revenue + ')');
 }
-
