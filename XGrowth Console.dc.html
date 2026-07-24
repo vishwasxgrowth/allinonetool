@@ -77,6 +77,17 @@
           <span style="{{navLabel}}">User Access</span>
         </div>
       </sc-if>
+
+      <!-- Configure — Admin only -->
+      <sc-if value="{{isAdmin}}">
+        <div onClick="{{goConfig}}" style="{{navConfig}}">
+          <span style="{{navConfigIndicator}}"></span>
+          <span style="{{navIcon}}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l7 4v6c0 4-3 7-7 8-4-1-7-4-7-8V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          </span>
+          <span style="{{navLabel}}">Configure</span>
+        </div>
+      </sc-if>
     </div>
 
     <!-- Week KPIs -->
@@ -178,6 +189,46 @@
           </sc-for>
         </div>
 
+        <!-- ── TODAY: what needs attention ── -->
+        <sc-if value="{{hasTodayBlocks}}">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:17px;font-weight:700;">What needs attention</span>
+            </div>
+            <sc-if value="{{canEditConfig}}">
+              <div onClick="{{goConfig}}" style="display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:9px;border:1px solid rgba(255,255,255,0.1);color:#9499AE;font-size:12px;cursor:pointer;" style-hover="{{ghostHover}}">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M5 5l2 2M17 17l2 2M2 12h3M19 12h3M5 19l2-2M17 7l2-2"/></svg>
+                Configure
+              </div>
+            </sc-if>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-bottom:32px;">
+            <sc-for list="{{todayBlocks}}" as="b" hint-placeholder-count="4">
+              <div style="{{b.cardStyle}}">
+                <div style="{{b.headerStyle}}">
+                  <span style="{{b.dotStyle}}"></span>
+                  <span style="font-size:13.5px;font-weight:700;color:#E7E9F2;flex:1;">{{b.label}}</span>
+                  <span style="{{b.countStyle}}">{{b.count}}</span>
+                </div>
+                <sc-if value="{{b.empty}}">
+                  <div style="padding:14px;text-align:center;color:#5E6377;font-size:12px;">Nothing here</div>
+                </sc-if>
+                <div style="display:flex;flex-direction:column;gap:5px;">
+                  <sc-for list="{{b.items}}" as="it" hint-placeholder-count="3">
+                    <div onClick="{{it.onOpen}}" style="{{it.rowStyle}}" style-hover="{{it.rowHover}}">
+                      <span style="font-size:12.5px;font-weight:500;color:#D7DAE8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{it.name}}</span>
+                      <span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#777C92;flex:none;">{{it.revenue}}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <sc-if value="{{b.more}}">
+                  <div style="font-size:11px;color:#5E6377;margin-top:8px;text-align:center;">{{b.more}}</div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
         <!-- Apps header + sort -->
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
           <div style="display:flex;align-items:center;gap:8px;">
@@ -225,13 +276,6 @@
           </sc-for>
         </div>
 
-        <!-- Legend -->
-        <div style="display:flex;gap:16px;margin-top:14px;padding:0 4px;">
-          <span style="font-size:10.5px;color:#5E6377;"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#7C7CFF;vertical-align:1px;margin-right:5px;"></span>Tests</span>
-          <span style="font-size:10.5px;color:#5E6377;"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#2DD4BF;vertical-align:1px;margin-right:5px;"></span>Optimizing</span>
-          <span style="font-size:10.5px;color:#5E6377;"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#E24B4A;vertical-align:1px;margin-right:5px;"></span>Policy issue</span>
-        </div>
-
       </div>
     </main>
   </sc-if>
@@ -253,6 +297,14 @@
         </div>
 
         <div style="flex:1;overflow-y:auto;padding:24px 26px;">
+          <!-- Phase setter (admin sets phase manually) -->
+          <div style="font-size:12px;font-weight:700;color:#777C92;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Set phase</div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px;">
+            <sc-for list="{{openApp.phaseSetters}}" as="ps" hint-placeholder-count="3">
+              <div onClick="{{ps.onSet}}" style="{{ps.style}}">{{ps.label}}</div>
+            </sc-for>
+          </div>
+
           <!-- Phase timeline -->
           <div style="font-size:12px;font-weight:700;color:#777C92;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;">Phase</div>
           <sc-for list="{{openApp.phases}}" as="ph" hint-placeholder-count="3">
@@ -445,6 +497,89 @@
     </main>
   </sc-if>
 
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- CONFIGURE VIEW (Admin only) -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <sc-if value="{{showConfig}}">
+    <main style="flex:1;min-width:0;height:100%;overflow-y:auto;background:radial-gradient(1100px 600px at 18% -8%,rgba(124,124,255,0.08),transparent 60%),#080912;">
+      <div style="max-width:760px;margin:0 auto;padding:36px 40px 90px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div style="font-size:28px;font-weight:800;letter-spacing:-0.02em;">Configure</div>
+          <div style="display:flex;gap:10px;">
+            <div onClick="{{cancelConfigEdit}}" style="display:flex;align-items:center;padding:0 18px;height:40px;border-radius:11px;border:1px solid rgba(255,255,255,0.1);color:#9499AE;font-size:13px;cursor:pointer;" style-hover="{{ghostHover}}">Cancel</div>
+            <div onClick="{{saveConfigEdit}}" style="display:flex;align-items:center;padding:0 22px;height:40px;border-radius:11px;background:linear-gradient(140deg,#7C7CFF,#5B4BE0);color:#fff;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 8px 22px -8px rgba(124,124,255,0.8);" style-hover="{{primaryHover}}">Save changes</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:#777C92;margin-bottom:32px;">Set up the phases, activities, and what shows on the dashboard. Applies to all apps.</div>
+
+        <!-- Phases -->
+        <div style="margin-bottom:32px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div style="font-size:15px;font-weight:700;">Phases</div>
+            <div onClick="{{addPhase}}" style="font-size:12.5px;color:#A9AAFF;background:rgba(124,124,255,0.15);border:1px solid rgba(124,124,255,0.3);padding:6px 13px;border-radius:9px;cursor:pointer;" style-hover="{{primaryHover}}">+ Add phase</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <sc-for list="{{cfgPhases}}" as="p" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);">
+                <input type="color" value="{{p.color}}" onInput="{{p.onColor}}" style="width:34px;height:34px;padding:2px;flex:none;cursor:pointer;">
+                <input value="{{p.label}}" onInput="{{p.onLabel}}" style="flex:1;">
+                <div onClick="{{p.onUp}}" style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#9499AE;cursor:pointer;border:1px solid rgba(255,255,255,0.08);" style-hover="{{ghostHover}}">&#8593;</div>
+                <div onClick="{{p.onDown}}" style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#9499AE;cursor:pointer;border:1px solid rgba(255,255,255,0.08);" style-hover="{{ghostHover}}">&#8595;</div>
+                <div onClick="{{p.onRemove}}" style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#F2616E;cursor:pointer;" style-hover="{{removeHover}}">&#215;</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- Live phase selector -->
+        <div style="margin-bottom:32px;">
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Live phase</div>
+          <div style="font-size:12px;color:#777C92;margin-bottom:14px;">Which phase means the app is live and shows activities (like Handover).</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <sc-for list="{{cfgLivePhaseOptions}}" as="lp" hint-placeholder-count="3">
+              <div onClick="{{lp.onSelect}}" style="{{lp.style}}">{{lp.label}}</div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- Activities -->
+        <div style="margin-bottom:32px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div style="font-size:15px;font-weight:700;">Activities</div>
+            <div onClick="{{addActivity}}" style="font-size:12.5px;color:#A9AAFF;background:rgba(124,124,255,0.15);border:1px solid rgba(124,124,255,0.3);padding:6px 13px;border-radius:9px;cursor:pointer;" style-hover="{{primaryHover}}">+ Add activity</div>
+          </div>
+          <div style="font-size:12px;color:#777C92;margin-bottom:14px;">Locked activities are always on (like Mediation — done once). Toggleable ones turn on/off per app.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <sc-for list="{{cfgActivities}}" as="a" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);">
+                <input type="color" value="{{a.color}}" onInput="{{a.onColor}}" style="width:34px;height:34px;padding:2px;flex:none;cursor:pointer;">
+                <input value="{{a.name}}" onInput="{{a.onName}}" style="flex:1;">
+                <div onClick="{{a.onToggleLock}}" style="{{a.lockStyle}}">{{a.lockLabel}}</div>
+                <div onClick="{{a.onRemove}}" style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#F2616E;cursor:pointer;" style-hover="{{removeHover}}">&#215;</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- Today blocks -->
+        <div style="margin-bottom:20px;">
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Dashboard "What needs attention"</div>
+          <div style="font-size:12px;color:#777C92;margin-bottom:14px;">Turn blocks on/off and set their order.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <sc-for list="{{cfgToday}}" as="t" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);">
+                <div onClick="{{t.onToggle}}" style="{{t.toggleStyle}}"><div style="{{t.knobStyle}}"></div></div>
+                <span style="flex:1;font-size:13.5px;font-weight:500;color:#E7E9F2;">{{t.label}}</span>
+                <div onClick="{{t.onUp}}" style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#9499AE;cursor:pointer;border:1px solid rgba(255,255,255,0.08);" style-hover="{{ghostHover}}">&#8593;</div>
+                <div onClick="{{t.onDown}}" style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#9499AE;cursor:pointer;border:1px solid rgba(255,255,255,0.08);" style-hover="{{ghostHover}}">&#8595;</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </main>
+  </sc-if>
+
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
@@ -472,9 +607,15 @@ class Component extends DCLogic {
     // Dashboard
     sortBy: 'revenue',
     phaseFilter: 'all',
-    appPhases: this.loadAppPhases(),     // { appId: 'onboarding'|'sdk'|'handover' }
-    appActivities: this.loadAppActivities(), // { appId: { tests:bool, optimizing:bool, policy:bool } }
+    appPhases: this.loadAppPhases(),
+    appActivities: this.loadAppActivities(),
+    appPinned: this.loadPinned(),
     openAppId: null,
+
+    // Config (global, editable)
+    config: this.loadConfig(),
+    configDraft: null,   // working copy while editing
+    configSaved: false,
   };
 
   // ── SETTINGS ──────────────────────────────────────────────
@@ -532,20 +673,61 @@ class Component extends DCLogic {
     this.setState({ users });
   }
 
-  // ── PHASES & ACTIVITIES ────────────────────────────────────
+  // ── CONFIG (global phases, activities, today blocks) ───────
 
-  PHASES = [
-    { id:'onboarding', label:'Onboarding',      color:'#F4A862' },
-    { id:'sdk',        label:'SDK Integration', color:'#5BA8F5' },
-    { id:'handover',   label:'Handover',        color:'#7C7CFF' },
-  ];
+  DEFAULT_CONFIG() {
+    return {
+      phases: [
+        { id:'onboarding', label:'Onboarding',      color:'#F4A862' },
+        { id:'sdk',        label:'SDK Integration', color:'#5BA8F5' },
+        { id:'handover',   label:'Handover',        color:'#7C7CFF' },
+      ],
+      activities: [
+        { id:'mediation',  name:'Mediation',    locked:true,  color:'#45D483' },
+        { id:'tests',      name:'Tests',        locked:false, color:'#7C7CFF' },
+        { id:'optimizing', name:'Optimization', locked:false, color:'#2DD4BF' },
+        { id:'policy',     name:'Policy',       locked:false, color:'#E24B4A' },
+      ],
+      // which activity phase acts as the "live" phase that shows activities
+      livePhaseId: 'handover',
+      // Today view blocks — on/off + order
+      todayBlocks: [
+        { id:'policy',   label:'Policy issues',   on:true },
+        { id:'tests',    label:'Tests running',   on:true },
+        { id:'stalled',  label:'Setup in progress', on:true },
+        { id:'pinned',   label:'Pinned apps',     on:true },
+      ],
+    };
+  }
 
-  ACTIVITIES = [
-    { id:'mediation',  name:'Mediation',    locked:true  },
-    { id:'tests',      name:'Tests',        locked:false, color:'#7C7CFF' },
-    { id:'optimizing', name:'Optimization', locked:false, color:'#2DD4BF' },
-    { id:'policy',     name:'Policy',       locked:false, color:'#E24B4A' },
-  ];
+  loadConfig() {
+    try {
+      const s = typeof localStorage !== 'undefined' && localStorage.getItem('xg_config');
+      if (s) {
+        const parsed = JSON.parse(s);
+        const def = this.DEFAULT_CONFIG();
+        return Object.assign({}, def, parsed);
+      }
+    } catch(e) {}
+    return this.DEFAULT_CONFIG();
+  }
+  saveConfig(cfg) { try { localStorage.setItem('xg_config', JSON.stringify(cfg)); } catch(e){} }
+
+  get PHASES() { return this.state.config.phases; }
+  get ACTIVITIES() { return this.state.config.activities; }
+
+  loadPinned() {
+    try {
+      const s = typeof localStorage !== 'undefined' && localStorage.getItem('xg_pinned');
+      return s ? JSON.parse(s) : {};
+    } catch(e) { return {}; }
+  }
+  savePinned(p) { try { localStorage.setItem('xg_pinned', JSON.stringify(p)); } catch(e){} }
+  togglePin(appId) {
+    const appPinned = Object.assign({}, this.state.appPinned, { [appId]: !this.state.appPinned[appId] });
+    this.savePinned(appPinned);
+    this.setState({ appPinned });
+  }
 
   loadAppPhases() {
     try {
@@ -563,10 +745,16 @@ class Component extends DCLogic {
   }
   saveAppActivities(a) { try { localStorage.setItem('xg_activities', JSON.stringify(a)); } catch(e){} }
 
-  getPhase(appId) { return this.state.appPhases[appId] || 'handover'; }
+  // Apps default to UNASSIGNED (null) until admin sets a phase
+  getPhase(appId) { return this.state.appPhases[appId] || null; }
 
   getActivities(appId) {
-    return this.state.appActivities[appId] || { mediation:true, tests:false, optimizing:false, policy:false };
+    const stored = this.state.appActivities[appId] || {};
+    const out = {};
+    this.ACTIVITIES.forEach(act => {
+      out[act.id] = act.locked ? true : !!stored[act.id];
+    });
+    return out;
   }
 
   setPhase(appId, phaseId) {
@@ -576,13 +764,35 @@ class Component extends DCLogic {
   }
 
   toggleActivity(appId, actId) {
-    if (actId === 'mediation') return; // locked
-    const cur = this.getActivities(appId);
+    const act = this.ACTIVITIES.find(a => a.id === actId);
+    if (act && act.locked) return;
+    const cur = this.state.appActivities[appId] || {};
     const next = Object.assign({}, cur, { [actId]: !cur[actId] });
     const appActivities = Object.assign({}, this.state.appActivities, { [appId]: next });
     this.saveAppActivities(appActivities);
     this.setState({ appActivities });
   }
+
+  // ── CONFIG EDITING (admin) ─────────────────────────────────
+
+  startConfigEdit() {
+    this.setState({ configDraft: JSON.parse(JSON.stringify(this.state.config)), currentView:'config' });
+  }
+  cancelConfigEdit() {
+    this.setState({ configDraft: null, currentView:'dashboard' });
+  }
+  commitConfig() {
+    const cfg = this.state.configDraft;
+    this.saveConfig(cfg);
+    this.setState({ config: cfg, configDraft: null, configSaved: true, currentView:'dashboard' });
+    setTimeout(() => this.setState({ configSaved:false }), 3000);
+  }
+  updateDraft(fn) {
+    const d = JSON.parse(JSON.stringify(this.state.configDraft));
+    fn(d);
+    this.setState({ configDraft: d });
+  }
+  genId(prefix) { return prefix + '_' + Math.random().toString(36).slice(2,7); }
 
   // ── DATA ───────────────────────────────────────────────────
 
@@ -648,9 +858,11 @@ class Component extends DCLogic {
     const navDashboard    = v==='dashboard'   ? navActive : navIdle;
     const navSettings     = v==='settings'    ? navActive : navIdle;
     const navUserAccess   = v==='useraccess'  ? navActive : navIdle;
+    const navConfig       = v==='config'      ? navActive : navIdle;
     const navDashboardIndicator  = v==='dashboard'  ? indicator : noIndicator;
     const navSettingsIndicator   = v==='settings'   ? indicator : noIndicator;
     const navUserAccessIndicator = v==='useraccess' ? indicator : noIndicator;
+    const navConfigIndicator     = v==='config'     ? indicator : noIndicator;
 
     const navStyle = { width: collapsed?'64px':'240px', flex:'none', height:'100%', display:'flex',
       flexDirection:'column', padding: collapsed?'20px 10px':'20px 16px',
@@ -737,6 +949,23 @@ class Component extends DCLogic {
       : { initials:'—', name:'Select a client', apps:0, model:'—' };
 
     const rawApps = s.liveApps ? s.liveApps.filter(a => a.clientId === selId) : [];
+    const cfg = s.config;
+    const phases = cfg.phases;
+    const activities = cfg.activities;
+    const livePhaseId = cfg.livePhaseId;
+
+    const phaseMap = {};
+    phases.forEach(p => phaseMap[p.id] = p);
+    const actMap = {};
+    activities.forEach(a => actMap[a.id] = a);
+
+    const phaseBadgeStyle = (phaseId) => {
+      const p = phaseMap[phaseId];
+      if (!p) return { display:'inline-block', padding:'3px 12px', borderRadius:'20px', fontSize:'11px',
+        fontWeight:600, background:'rgba(255,255,255,0.06)', color:'#777C92', border:'1px solid rgba(255,255,255,0.1)' };
+      return { display:'inline-block', padding:'3px 12px', borderRadius:'20px', fontSize:'11px',
+        fontWeight:600, background: p.color+'22', color: p.color, border:'1px solid '+p.color+'44' };
+    };
 
     // Sort
     const sortedAll = [...rawApps].sort((a,b) => {
@@ -745,29 +974,17 @@ class Component extends DCLogic {
       return (b.revenue||0) - (a.revenue||0);
     });
 
-    const phaseMap = {};
-    this.PHASES.forEach(p => phaseMap[p.id] = p);
-    const phaseBadgeStyle = (phaseId) => {
-      const p = phaseMap[phaseId] || phaseMap['handover'];
-      return { display:'inline-block', padding:'3px 12px', borderRadius:'20px', fontSize:'11px',
-        fontWeight:600, background: p.color+'22', color: p.color, border:'1px solid '+p.color+'44' };
-    };
-    const activityDotColors = { tests:'#7C7CFF', optimizing:'#2DD4BF', policy:'#E24B4A' };
-
-    // Phase filter
-    const filtered = s.phaseFilter === 'all'
-      ? sortedAll
-      : sortedAll.filter(a => this.getPhase(a.id) === s.phaseFilter);
-
-    // Phase filter tabs
-    const phaseCounts = { all: rawApps.length, onboarding:0, sdk:0, handover:0 };
-    rawApps.forEach(a => { phaseCounts[this.getPhase(a.id)] = (phaseCounts[this.getPhase(a.id)]||0)+1; });
-    const tabDef = [
-      { id:'all',        label:'All' },
-      { id:'onboarding', label:'Onboarding' },
-      { id:'sdk',        label:'SDK Integration' },
-      { id:'handover',   label:'Handover' },
-    ];
+    // Phase filter tabs (dynamic from config + Unassigned + All)
+    const phaseCounts = { all: rawApps.length, unassigned: 0 };
+    phases.forEach(p => phaseCounts[p.id] = 0);
+    rawApps.forEach(a => {
+      const ph = this.getPhase(a.id);
+      if (!ph) phaseCounts.unassigned++;
+      else phaseCounts[ph] = (phaseCounts[ph]||0)+1;
+    });
+    const tabDef = [{ id:'all', label:'All' }]
+      .concat(phases.map(p => ({ id:p.id, label:p.label })))
+      .concat(phaseCounts.unassigned > 0 ? [{ id:'unassigned', label:'Unassigned' }] : []);
     const phaseTabs = tabDef.map(t => {
       const active = s.phaseFilter === t.id;
       return {
@@ -785,35 +1002,97 @@ class Component extends DCLogic {
       };
     });
 
-    // App rows
-    const apps = filtered.map(a => {
+    // Filtered
+    const filtered = sortedAll.filter(a => {
+      const ph = this.getPhase(a.id);
+      if (s.phaseFilter === 'all') return true;
+      if (s.phaseFilter === 'unassigned') return !ph;
+      return ph === s.phaseFilter;
+    });
+
+    const rowBase = (hover) => ({ display:'flex', alignItems:'center', gap:'14px', cursor:'pointer',
+      padding:'12px 16px', borderRadius:'11px',
+      background: hover ? 'rgba(124,124,255,0.05)' : 'rgba(255,255,255,0.022)',
+      border: hover ? '1px solid rgba(124,124,255,0.3)' : '1px solid rgba(255,255,255,0.06)' });
+    const iconBase = { flex:'none', width:'36px', height:'36px', borderRadius:'10px', display:'flex',
+      alignItems:'center', justifyContent:'center', fontWeight:700, fontSize:'12px',
+      color:'#C7CAE0', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)' };
+
+    const buildRow = (a) => {
       const phaseId = this.getPhase(a.id);
       const acts = this.getActivities(a.id);
-      const isLive = phaseId === 'handover';
+      const isLive = phaseId === livePhaseId;
+      const pinned = !!s.appPinned[a.id];
       const dots = [];
       if (isLive) {
-        ['tests','optimizing','policy'].forEach(k => {
-          if (acts[k]) dots.push({ style:{ width:'8px', height:'8px', borderRadius:'50%', background:activityDotColors[k] } });
+        activities.forEach(act => {
+          if (!act.locked && acts[act.id]) {
+            dots.push({ style:{ width:'8px', height:'8px', borderRadius:'50%', background: act.color||'#7C7CFF' } });
+          }
         });
       }
       return {
         icon: (a.name||'').slice(0,2).toUpperCase(),
         name: a.name,
         revenue: this.fmtMoney(a.revenue||0),
-        phaseLabel: (phaseMap[phaseId]||{}).label || 'Handover',
+        phaseLabel: phaseId ? (phaseMap[phaseId]||{}).label : 'Unassigned',
         phaseBadge: phaseBadgeStyle(phaseId),
         activityDots: dots,
+        pinned,
+        pinStyle: { flex:'none', cursor:'pointer', fontSize:'15px', color: pinned ? '#F4A862' : '#3E4258', width:'20px', textAlign:'center' },
+        onPin: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.togglePin(a.id); },
         onOpen: () => this.setState({ openAppId: a.id }),
-        rowStyle: { display:'flex', alignItems:'center', gap:'14px', cursor:'pointer',
-          padding:'12px 16px', borderRadius:'11px', background:'rgba(255,255,255,0.022)',
-          border:'1px solid rgba(255,255,255,0.06)' },
-        rowHover: { display:'flex', alignItems:'center', gap:'14px', cursor:'pointer',
-          padding:'12px 16px', borderRadius:'11px', background:'rgba(124,124,255,0.05)',
-          border:'1px solid rgba(124,124,255,0.3)' },
-        iconStyle: { flex:'none', width:'36px', height:'36px', borderRadius:'10px', display:'flex',
-          alignItems:'center', justifyContent:'center', fontWeight:700, fontSize:'12px',
-          color:'#C7CAE0', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)' },
+        rowStyle: rowBase(false),
+        rowHover: rowBase(true),
+        iconStyle: iconBase,
       };
+    };
+
+    const apps = filtered.map(buildRow);
+
+    // ── TODAY VIEW ──
+    const todayBlocks = [];
+    (cfg.todayBlocks||[]).filter(b => b.on).forEach(b => {
+      let items = [];
+      let accent = '#7C7CFF';
+      let icon = 'circle';
+      if (b.id === 'policy') {
+        accent = '#E24B4A'; icon = 'alert';
+        items = rawApps.filter(a => this.getPhase(a.id)===livePhaseId && this.getActivities(a.id).policy);
+      } else if (b.id === 'tests') {
+        accent = '#7C7CFF'; icon = 'flask';
+        items = rawApps.filter(a => this.getPhase(a.id)===livePhaseId && this.getActivities(a.id).tests);
+      } else if (b.id === 'stalled') {
+        accent = '#F4A862'; icon = 'clock';
+        items = rawApps.filter(a => { const p=this.getPhase(a.id); return p && p!==livePhaseId; });
+      } else if (b.id === 'pinned') {
+        accent = '#F4A862'; icon = 'pin';
+        items = rawApps.filter(a => s.appPinned[a.id]);
+      }
+      items = items.sort((x,y)=>(y.revenue||0)-(x.revenue||0));
+      todayBlocks.push({
+        label: b.label,
+        count: items.length,
+        accent,
+        icon,
+        empty: items.length === 0,
+        headerStyle: { display:'flex', alignItems:'center', gap:'8px', marginBottom:'12px' },
+        dotStyle: { width:'9px', height:'9px', borderRadius:'50%', background: accent },
+        countStyle: { fontFamily:"'JetBrains Mono',monospace", fontSize:'12px', fontWeight:600,
+          color: accent, background: accent+'1e', padding:'1px 9px', borderRadius:'20px' },
+        cardStyle: { background:'rgba(255,255,255,0.022)', border:'1px solid rgba(255,255,255,0.06)',
+          borderRadius:'14px', padding:'16px', minWidth:'0' },
+        items: items.slice(0,5).map(a => ({
+          name: a.name,
+          revenue: this.fmtMoney(a.revenue||0),
+          onOpen: () => this.setState({ openAppId: a.id }),
+          rowStyle: { display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px',
+            padding:'8px 10px', borderRadius:'9px', cursor:'pointer', background:'rgba(255,255,255,0.03)' },
+          rowHover: { display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px',
+            padding:'8px 10px', borderRadius:'9px', cursor:'pointer', background:'rgba(124,124,255,0.08)' },
+        })),
+        more: items.length > 5 ? ('+' + (items.length-5) + ' more') : '',
+      });
     });
 
     // Sort button styles
@@ -840,29 +1119,43 @@ class Component extends DCLogic {
       alignItems:'center', justifyContent:'center', fontWeight:700, fontSize:'15px', color:'#fff',
       background:'linear-gradient(150deg,#7C7CFF,#5B4BE0)' };
 
-    let openAppObj = { icon:'', name:'', phases:[], activities:[], metrics:[] };
+    let openAppObj = { icon:'', name:'', phaseSetters:[], phases:[], activities:[], metrics:[], isUnassigned:true };
     if (openApp) {
       const curPhase = this.getPhase(openApp.id);
       const acts = this.getActivities(openApp.id);
-      const phaseOrder = ['onboarding','sdk','handover'];
-      const curIdx = phaseOrder.indexOf(curPhase);
-      const phases = this.PHASES.map((p, i) => {
-        const done = i < curIdx;
+      const curIdx = phases.findIndex(p => p.id === curPhase);
+
+      // Phase setter chips (admin sets phase manually)
+      const phaseSetters = phases.map(p => {
+        const active = p.id === curPhase;
+        return {
+          label: p.label,
+          onSet: () => this.setPhase(openApp.id, p.id),
+          style: { padding:'6px 12px', borderRadius:'9px', fontSize:'12px', fontWeight:600, cursor:'pointer',
+            background: active ? p.color+'26' : 'rgba(255,255,255,0.04)',
+            color: active ? p.color : '#9499AE',
+            border: '1px solid ' + (active ? p.color+'66' : 'rgba(255,255,255,0.08)') },
+        };
+      });
+
+      const phasesTl = phases.map((p, i) => {
+        const done = curIdx > -1 && i < curIdx;
         const isCurrent = p.id === curPhase;
-        const isHandover = p.id === 'handover' && isCurrent;
+        const isLive = p.id === livePhaseId && isCurrent;
         return {
           label: p.label,
           done,
-          isHandover,
-          status: done ? 'Done' : (isCurrent ? (p.id==='handover'?'Live now':'In progress') : 'Not started'),
+          isHandover: isLive,
+          status: done ? 'Done' : (isCurrent ? (p.id===livePhaseId?'Live now':'In progress') : 'Not started'),
           dotStyle: { width:'22px', height:'22px', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center',
             background: done ? '#E1F5EE22' : (isCurrent ? p.color+'22' : 'rgba(255,255,255,0.04)'),
             border: '2px solid ' + (done ? '#1D9E75' : (isCurrent ? p.color : 'rgba(255,255,255,0.12)')) },
-          lineStyle: { width:'2px', flex:1, minHeight: (i<this.PHASES.length-1)?'20px':'0', background:'rgba(255,255,255,0.1)' },
+          lineStyle: { width:'2px', flex:1, minHeight: (i<phases.length-1)?'20px':'0', background:'rgba(255,255,255,0.1)' },
           labelStyle: { fontSize:'13.5px', fontWeight:600, color: isCurrent ? p.color : (done ? '#9499AE' : '#5E6377') },
         };
       });
-      const activities = this.ACTIVITIES.map(act => {
+
+      const activitiesUi = activities.map(act => {
         const on = act.locked ? true : !!acts[act.id];
         return {
           name: act.name,
@@ -889,7 +1182,9 @@ class Component extends DCLogic {
         { label:'eCPM',        val: '$'+(openApp.ecpm||0).toFixed(2) },
         { label:'Match Rate',  val: (openApp.matchRate||0).toFixed(1)+'%' },
       ];
-      openAppObj = { icon:(openApp.name||'').slice(0,2).toUpperCase(), name:openApp.name, phases, activities, metrics };
+      openAppObj = { icon:(openApp.name||'').slice(0,2).toUpperCase(), name:openApp.name,
+        phaseSetters, phases:phasesTl, activities:activitiesUi, metrics,
+        isUnassigned: !curPhase, showActivities: curPhase === livePhaseId };
     }
 
     const sm = s.liveSummary;
@@ -938,12 +1233,58 @@ class Component extends DCLogic {
     const rowHover     = { background:'rgba(255,255,255,0.025)' };
     const removeHover  = { background:'rgba(242,97,110,0.12)', borderRadius:'9px' };
 
+    // ── CONFIG EDIT VIEW ──
+    const d = s.configDraft;
+    let cfgPhases = [], cfgActivities = [], cfgToday = [], cfgLivePhaseOptions = [];
+    if (d) {
+      cfgPhases = d.phases.map((p, i) => ({
+        label: p.label, color: p.color,
+        onLabel: e => this.updateDraft(dd => { dd.phases[i].label = e.target.value; }),
+        onColor: e => this.updateDraft(dd => { dd.phases[i].color = e.target.value; }),
+        onUp:   () => this.updateDraft(dd => { if(i>0){ const t=dd.phases[i-1]; dd.phases[i-1]=dd.phases[i]; dd.phases[i]=t; } }),
+        onDown: () => this.updateDraft(dd => { if(i<dd.phases.length-1){ const t=dd.phases[i+1]; dd.phases[i+1]=dd.phases[i]; dd.phases[i]=t; } }),
+        onRemove: () => this.updateDraft(dd => { dd.phases = dd.phases.filter((_,j)=>j!==i); }),
+        swatch: { width:'22px', height:'22px', borderRadius:'6px', background:p.color, flex:'none', border:'1px solid rgba(255,255,255,0.15)' },
+      }));
+      cfgActivities = d.activities.map((a, i) => ({
+        name: a.name, color: a.color, locked: a.locked,
+        onName:  e => this.updateDraft(dd => { dd.activities[i].name = e.target.value; }),
+        onColor: e => this.updateDraft(dd => { dd.activities[i].color = e.target.value; }),
+        onToggleLock: () => this.updateDraft(dd => { dd.activities[i].locked = !dd.activities[i].locked; }),
+        onRemove: () => this.updateDraft(dd => { dd.activities = dd.activities.filter((_,j)=>j!==i); }),
+        swatch: { width:'22px', height:'22px', borderRadius:'6px', background:a.color, flex:'none', border:'1px solid rgba(255,255,255,0.15)' },
+        lockStyle: { padding:'5px 11px', borderRadius:'8px', fontSize:'11.5px', fontWeight:600, cursor:'pointer',
+          background: a.locked ? 'rgba(69,212,131,0.15)' : 'rgba(255,255,255,0.05)',
+          color: a.locked ? '#45D483' : '#777C92',
+          border: '1px solid ' + (a.locked ? 'rgba(69,212,131,0.3)' : 'rgba(255,255,255,0.08)') },
+        lockLabel: a.locked ? 'Locked (always on)' : 'Toggleable',
+      }));
+      cfgToday = d.todayBlocks.map((b, i) => ({
+        label: b.label, on: b.on,
+        onToggle: () => this.updateDraft(dd => { dd.todayBlocks[i].on = !dd.todayBlocks[i].on; }),
+        onUp:   () => this.updateDraft(dd => { if(i>0){ const t=dd.todayBlocks[i-1]; dd.todayBlocks[i-1]=dd.todayBlocks[i]; dd.todayBlocks[i]=t; } }),
+        onDown: () => this.updateDraft(dd => { if(i<dd.todayBlocks.length-1){ const t=dd.todayBlocks[i+1]; dd.todayBlocks[i+1]=dd.todayBlocks[i]; dd.todayBlocks[i]=t; } }),
+        toggleStyle: { width:'34px', height:'19px', borderRadius:'10px', cursor:'pointer', flex:'none',
+          background: b.on ? '#45D483' : 'rgba(255,255,255,0.12)' },
+        knobStyle: { width:'15px', height:'15px', borderRadius:'50%', background:'#fff', margin:'2px',
+          transform: b.on ? 'translateX(15px)' : 'translateX(0)', transition:'transform .2s' },
+      }));
+      cfgLivePhaseOptions = d.phases.map(p => ({
+        label: p.label, id: p.id, active: p.id === d.livePhaseId,
+        onSelect: () => this.updateDraft(dd => { dd.livePhaseId = p.id; }),
+        style: { padding:'6px 12px', borderRadius:'9px', fontSize:'12px', fontWeight:600, cursor:'pointer',
+          background: p.id===d.livePhaseId ? 'rgba(124,124,255,0.2)' : 'rgba(255,255,255,0.04)',
+          color: p.id===d.livePhaseId ? '#B9B9FF' : '#9499AE',
+          border: '1px solid ' + (p.id===d.livePhaseId ? 'rgba(124,124,255,0.4)' : 'rgba(255,255,255,0.08)') },
+      }));
+    }
+
     return {
       // Nav
       navStyle, navLabel, navIcon, wordmarkStyle, kpiBlock, collapseIcon, collapseHover,
       collapseRowStyle, profileCardStyle, profileTextStyle,
-      navDashboard, navSettings, navUserAccess,
-      navDashboardIndicator, navSettingsIndicator, navUserAccessIndicator,
+      navDashboard, navSettings, navUserAccess, navConfig,
+      navDashboardIndicator, navSettingsIndicator, navUserAccessIndicator, navConfigIndicator,
       showRoleBadge, roleAdminStyle, roleClientStyle,
       profileInitials, profileName, profileRole, currentRoleLabel,
       isAdmin,
@@ -951,6 +1292,7 @@ class Component extends DCLogic {
       goDashboard:  () => this.setState({ currentView: 'dashboard' }),
       goSettings:   () => this.setState({ currentView: 'settings' }),
       goUserAccess: () => this.setState({ currentView: 'useraccess' }),
+      goConfig:     () => this.startConfigEdit(),
       setAdmin:  () => this.setState({ currentRole: 'admin' }),
       setClient: () => this.setState({ currentRole: 'client' }),
 
@@ -958,6 +1300,7 @@ class Component extends DCLogic {
       showDashboard:  s.currentView === 'dashboard',
       showSettings:   s.currentView === 'settings',
       showUserAccess: s.currentView === 'useraccess' && isAdmin,
+      showConfig:     s.currentView === 'config' && isAdmin,
 
       // Dashboard
       weekKpis, clients, clientCount: clients.length,
@@ -968,6 +1311,10 @@ class Component extends DCLogic {
       client, summary, apps,
       dataSourceDot, dataSourceLabel,
       chip, pubAvatarStyle, primaryHover, ghostHover,
+      // Today
+      todayBlocks, hasTodayBlocks: todayBlocks.length > 0,
+      // Config entry (admin)
+      canEditConfig: isAdmin,
       // Phase tabs
       phaseTabs,
       // Sort
@@ -979,6 +1326,13 @@ class Component extends DCLogic {
       hasOpenApp, openApp: openAppObj,
       detailBackdrop, detailPanel, detailIconStyle,
       closeAppDetail: () => this.setState({ openAppId: null }),
+      // Config edit view
+      cfgPhases, cfgActivities, cfgToday, cfgLivePhaseOptions,
+      configSaved: s.configSaved,
+      addPhase:    () => this.updateDraft(dd => { dd.phases.push({ id:this.genId('ph'), label:'New Phase', color:'#9D7CF0' }); }),
+      addActivity: () => this.updateDraft(dd => { dd.activities.push({ id:this.genId('act'), name:'New Activity', locked:false, color:'#5BA8F5' }); }),
+      saveConfigEdit:   () => this.commitConfig(),
+      cancelConfigEdit: () => this.cancelConfigEdit(),
 
       // Settings
       sf: s.sf, settingsSaved: s.settingsSaved,
