@@ -148,60 +148,172 @@
   <!-- DASHBOARD VIEW -->
   <!-- ═══════════════════════════════════════════════════════════ -->
   <sc-if value="{{showDashboard}}">
-    <!-- Main workspace — full width -->
     <main style="flex:1;min-width:0;height:100%;overflow-y:auto;background:radial-gradient(1100px 600px at 18% -8%,rgba(124,124,255,0.08),transparent 60%),#080912;">
-      <div style="padding:30px 40px 60px;">
-        <div style="display:flex;align-items:center;gap:18px;">
+      <div style="padding:28px 36px 60px;">
+
+        <!-- Header -->
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
           <div style="{{pubAvatarStyle}}">{{client.initials}}</div>
           <div style="flex:1;min-width:0;">
-            <div style="font-size:28px;font-weight:800;letter-spacing:-0.02em;">{{client.name}}</div>
-            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:9px;">
+            <div style="font-size:26px;font-weight:800;letter-spacing:-0.02em;">{{client.name}}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:7px;">
               <span style="{{chip}}">{{client.apps}} Apps</span>
               <span style="{{chip}}">{{client.model}}</span>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:6px;height:6px;border-radius:50%;background:{{dataSourceDot}};"></div>
+                <span style="font-size:11.5px;color:#5E6377;">{{dataSourceLabel}}</span>
+              </div>
             </div>
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:7px;margin-top:20px;">
-          <div style="width:7px;height:7px;border-radius:50%;background:{{dataSourceDot}};"></div>
-          <span style="font-size:11.5px;color:#5E6377;">{{dataSourceLabel}}</span>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;">
+
+        <!-- Summary KPI cards -->
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:28px;">
           <sc-for list="{{summary}}" as="s" hint-placeholder-count="6">
-            <div style="padding:16px 18px;border-radius:15px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);">
-              <div style="font-size:12px;color:#777C92;">{{s.label}}</div>
-              <div style="display:flex;align-items:baseline;gap:9px;margin-top:6px;">
-                <span style="font-family:'JetBrains Mono',monospace;font-size:23px;font-weight:700;letter-spacing:-0.01em;">{{s.val}}</span>
-                <span style="font-size:12px;font-weight:600;color:#45D483;">{{s.delta}}</span>
-              </div>
+            <div style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);">
+              <div style="font-size:11px;color:#777C92;">{{s.label}}</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;margin-top:4px;letter-spacing:-0.01em;">{{s.val}}</div>
+              <div style="font-size:10.5px;color:#45D483;margin-top:2px;">{{s.delta}}</div>
             </div>
           </sc-for>
         </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin:34px 0 16px;">
-          <span style="font-size:18px;font-weight:700;">Apps <span style="color:#5E6377;font-weight:600;">({{client.apps}})</span></span>
+
+        <!-- View toggle + sort/filter bar -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:17px;font-weight:700;">Apps</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#A5A8FF;background:rgba(124,124,255,0.14);padding:2px 9px;border-radius:8px;">{{client.apps}}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <!-- Sort (list view only) -->
+            <sc-if value="{{isListView}}">
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="font-size:11.5px;color:#777C92;">Sort by</span>
+                <div onClick="{{sortRevenue}}" style="{{sortRevStyle}}">Revenue</div>
+                <div onClick="{{sortEcpm}}"    style="{{sortEcpmStyle}}">eCPM</div>
+                <div onClick="{{sortImpr}}"    style="{{sortImprStyle}}">Impressions</div>
+              </div>
+            </sc-if>
+            <!-- View toggle -->
+            <div style="display:flex;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:3px;gap:2px;">
+              <div onClick="{{setListView}}" style="{{listViewBtnStyle}}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                List
+              </div>
+              <div onClick="{{setPipelineView}}" style="{{pipelineViewBtnStyle}}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
+                Pipeline
+              </div>
+            </div>
+          </div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <sc-for list="{{apps}}" as="a" hint-placeholder-count="3">
-            <div style="{{a.cardStyle}}" style-hover="{{a.cardHover}}">
-              <div style="display:flex;align-items:center;gap:16px;">
-                <div style="{{a.iconStyle}}">{{a.icon}}</div>
-                <div style="width:200px;flex:none;">
-                  <div style="font-size:15px;font-weight:700;">{{a.name}}</div>
-                  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#777C92;margin-top:2px;">{{a.pkg}}</div>
-                </div>
-                <div style="flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
-                  <sc-for list="{{a.headline}}" as="m" hint-placeholder-count="4">
-                    <div>
-                      <div style="font-size:10.5px;color:#777C92;">{{m.label}}</div>
-                      <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;margin-top:2px;">{{m.val}}</div>
-                      <div style="font-size:10.5px;color:#45D483;margin-top:1px;">{{m.delta}}</div>
+
+        <!-- ── LIST VIEW ── -->
+        <sc-if value="{{isListView}}">
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{apps}}" as="a" hint-placeholder-count="5">
+              <div style="{{a.cardStyle}}" style-hover="{{a.cardHover}}">
+                <div style="display:flex;align-items:center;gap:14px;">
+                  <div style="{{a.iconStyle}}">{{a.icon}}</div>
+                  <div style="width:220px;flex:none;">
+                    <div style="font-size:14px;font-weight:700;">{{a.name}}</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#777C92;margin-top:2px;">{{a.pkg}}</div>
+                  </div>
+                  <!-- Stage badge -->
+                  <div style="width:130px;flex:none;">
+                    <span style="{{a.stageBadge}}">{{a.stageLabel}}</span>
+                  </div>
+                  <!-- Metrics -->
+                  <div style="flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+                    <sc-for list="{{a.headline}}" as="m" hint-placeholder-count="4">
+                      <div>
+                        <div style="font-size:10px;color:#777C92;">{{m.label}}</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;margin-top:1px;">{{m.val}}</div>
+                        <div style="font-size:10px;color:#45D483;">{{m.delta}}</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <svg width="60" height="26" viewBox="0 0 60 26" fill="none" style="flex:none"><polyline points="{{a.spark}}" fill="none" stroke="#7C7CFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <!-- Stage changer -->
+                  <div style="flex:none;position:relative;">
+                    <div onClick="{{a.onStageClick}}" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.09);color:#9499AE;font-size:11.5px;cursor:pointer;" style-hover="{{stageMenuHover}}">
+                      Move &#9660;
                     </div>
-                  </sc-for>
+                  </div>
                 </div>
-                <svg width="74" height="30" viewBox="0 0 74 30" fill="none" style="flex:none"><polyline points="{{a.spark}}" fill="none" stroke="#7C7CFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- ── PIPELINE VIEW ── -->
+        <sc-if value="{{isPipelineView}}">
+          <div style="overflow-x:auto;padding-bottom:20px;">
+            <div style="display:flex;gap:14px;align-items:flex-start;min-width:max-content;">
+              <sc-for list="{{pipelineCols}}" as="col" hint-placeholder-count="6">
+                <div onDragOver="{{col.onDragOver}}" onDrop="{{col.onDrop}}" style="{{col.colStyle}}">
+                  <!-- Column header -->
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                    <div>
+                      <div style="{{col.titleStyle}}">{{col.name}}</div>
+                      <div style="font-size:10.5px;color:#5E6377;margin-top:2px;">{{col.subtitle}}</div>
+                    </div>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#777C92;background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:7px;">{{col.count}}</span>
+                  </div>
+                  <!-- Revenue total for col -->
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5E6377;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06);">{{col.totalRevenue}}</div>
+                  <!-- Cards -->
+                  <div style="display:flex;flex-direction:column;gap:8px;min-height:60px;">
+                    <sc-for list="{{col.cards}}" as="card" hint-placeholder-count="2">
+                      <div draggable="true" onDragStart="{{card.onDragStart}}" style="{{card.cardStyle}}" style-hover="{{card.cardHover}}">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                          <div style="{{card.iconStyle}}">{{card.icon}}</div>
+                          <div style="flex:1;min-width:0;">
+                            <div style="font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{card.name}}</div>
+                          </div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                          <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#EDEEF6;">{{card.revenue}}</div>
+                          <div style="font-size:10px;color:#777C92;">eCPM {{card.ecpm}}</div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+                          <div style="font-size:10px;color:#777C92;">{{card.impressions}} impr</div>
+                          <div onClick="{{card.onMove}}" style="font-size:10.5px;color:#7C7CFF;cursor:pointer;">Move &#8594;</div>
+                        </div>
+                      </div>
+                    </sc-for>
+                    <sc-if value="{{col.isEmpty}}">
+                      <div style="padding:20px;text-align:center;border:1px dashed rgba(255,255,255,0.08);border-radius:10px;color:#3E4258;font-size:12px;">Drop here</div>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-for>
             </div>
-          </sc-for>
-        </div>
+          </div>
+        </sc-if>
+
+        <!-- Stage move modal -->
+        <sc-if value="{{showStageModal}}">
+          <div onClick="{{closeStageModal}}" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10;display:flex;align-items:center;justify-content:center;">
+            <div onClick="{{stopProp}}" style="background:#13152A;border:1px solid rgba(124,124,255,0.3);border-radius:18px;padding:24px;width:360px;box-shadow:0 30px 80px rgba(0,0,0,0.8);">
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Move App</div>
+              <div style="font-size:12px;color:#777C92;margin-bottom:18px;">{{stageModalAppName}}</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{stageOptions}}" as="opt" hint-placeholder-count="6">
+                  <div onClick="{{opt.onSelect}}" style="{{opt.optStyle}}" style-hover="{{opt.optHover}}">
+                    <span style="{{opt.dot}}"></span>
+                    <div>
+                      <div style="font-size:13px;font-weight:600;">{{opt.label}}</div>
+                      <div style="font-size:11px;color:#777C92;">{{opt.desc}}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div onClick="{{closeStageModal}}" style="margin-top:16px;text-align:center;font-size:12px;color:#5E6377;cursor:pointer;">Cancel</div>
+            </div>
+          </div>
+        </sc-if>
+
       </div>
     </main>
   </sc-if>
@@ -359,7 +471,7 @@ class Component extends DCLogic {
   state = {
     navCollapsed: false,
     currentView: 'dashboard',
-    currentRole: 'admin',   // 'admin' | 'client'
+    currentRole: 'admin',
     selectedClient: null,
 
     // Data
@@ -375,6 +487,15 @@ class Component extends DCLogic {
     showAddUserForm: false,
     newUser: { name:'', email:'', role:'Admin', client:'' },
     users: this.loadUsers(),
+
+    // Dashboard
+    dashView: 'list',
+    sortBy: 'revenue',
+    appStages: this.loadAppStages(),
+    showStageModal: false,
+    stageModalAppId: null,
+    stageModalAppName: '',
+    dragAppId: null,
   };
 
   // ── SETTINGS ──────────────────────────────────────────────
@@ -430,6 +551,42 @@ class Component extends DCLogic {
     const users = this.state.users.filter(u => u.id !== id);
     this.saveUsers(users);
     this.setState({ users });
+  }
+
+  // ── STAGES ─────────────────────────────────────────────────
+
+  STAGES = [
+    { id:'onboarding',  label:'Onboarding',            desc:'App newly added, collecting details', color:'#F4A862' },
+    { id:'sdk',         label:'SDK Integration',        desc:'AdMob SDK being integrated',          color:'#5BA8F5' },
+    { id:'ops-testing', label:'Operations — Testing',   desc:'A/B tests and experiments running',   color:'#7C7CFF' },
+    { id:'ops-policy',  label:'Operations — Policy',    desc:'Policy review or violation tracking', color:'#F2616E' },
+    { id:'ops-wfall',   label:'Operations — Waterfall', desc:'Waterfall & eCPM optimization',       color:'#2DD4BF' },
+    { id:'ops-stable',  label:'Operations — Stable',    desc:'Performing well, ongoing monitoring', color:'#45D483' },
+  ];
+
+  loadAppStages() {
+    try {
+      const s = typeof localStorage !== 'undefined' && localStorage.getItem('xg_stages');
+      return s ? JSON.parse(s) : {};
+    } catch(e) { return {}; }
+  }
+
+  saveAppStages(stages) {
+    try { localStorage.setItem('xg_stages', JSON.stringify(stages)); } catch(e) {}
+  }
+
+  getStage(appId) {
+    return this.state.appStages[appId] || 'ops-stable';
+  }
+
+  moveAppToStage(appId, stageId) {
+    const appStages = Object.assign({}, this.state.appStages, { [appId]: stageId });
+    this.saveAppStages(appStages);
+    this.setState({ appStages, showStageModal: false, dragAppId: null });
+  }
+
+  openStageModal(appId, appName) {
+    this.setState({ showStageModal: true, stageModalAppId: appId, stageModalAppName: appName });
   }
 
   // ── DATA ───────────────────────────────────────────────────
@@ -585,24 +742,116 @@ class Component extends DCLogic {
       : { initials:'—', name:'Select a client', apps:0, model:'—' };
 
     const rawApps = s.liveApps ? s.liveApps.filter(a => a.clientId === selId) : [];
-    const apps = rawApps.map(a => ({
-      icon: (a.name||'').slice(0,2).toUpperCase(),
-      name: a.name, pkg: a.id,
-      spark: this.makeSpark(a.dailyRevenue, 30, 74),
-      headline: [
-        { label:'Revenue',    val: this.fmtMoney(a.revenue||0),            delta:'▲ live' },
-        { label:'Impressions',val: this.fmtNum(a.impressions||0),           delta:'▲ live' },
-        { label:'eCPM',       val: '$'+(a.ecpm||0).toFixed(2),             delta:'▲ live' },
-        { label:'Match Rate', val: (a.matchRate||0).toFixed(1)+'%',         delta:'▲ live' },
-      ],
-      cardStyle: { padding:'18px 20px', borderRadius:'17px', background:'rgba(255,255,255,0.022)',
-        border:'1px solid rgba(255,255,255,0.06)' },
-      cardHover: { padding:'18px 20px', borderRadius:'17px', background:'rgba(124,124,255,0.06)',
-        border:'1px solid rgba(124,124,255,0.4)', transform:'translateY(-2px)' },
-      iconStyle: { flex:'none', width:'46px', height:'46px', borderRadius:'13px', display:'flex',
-        alignItems:'center', justifyContent:'center', fontWeight:700, fontSize:'14px',
-        color:'#C7CAE0', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)' },
+
+    // Sort
+    const sorted = [...rawApps].sort((a,b) => {
+      if (s.sortBy === 'ecpm') return (b.ecpm||0) - (a.ecpm||0);
+      if (s.sortBy === 'impressions') return (b.impressions||0) - (a.impressions||0);
+      return (b.revenue||0) - (a.revenue||0);
+    });
+
+    // Stage meta
+    const stageMap = {};
+    this.STAGES.forEach(st => stageMap[st.id] = st);
+    const stageBadgeStyle = (stageId) => {
+      const st = stageMap[stageId] || stageMap['ops-stable'];
+      return { display:'inline-block', padding:'3px 10px', borderRadius:'20px', fontSize:'11px',
+        fontWeight:600, background: st.color+'22', color: st.color, border:'1px solid '+st.color+'44' };
+    };
+
+    const apps = sorted.map(a => {
+      const stageId = this.getStage(a.id);
+      const st = stageMap[stageId] || stageMap['ops-stable'];
+      return {
+        icon: (a.name||'').slice(0,2).toUpperCase(),
+        name: a.name, pkg: a.id,
+        stageLabel: st.label, stageId,
+        stageBadge: stageBadgeStyle(stageId),
+        spark: this.makeSpark(a.dailyRevenue, 26, 60),
+        headline: [
+          { label:'Revenue',     val: this.fmtMoney(a.revenue||0),       delta:'▲ live' },
+          { label:'Impressions', val: this.fmtNum(a.impressions||0),      delta:'▲ live' },
+          { label:'eCPM',        val: '$'+(a.ecpm||0).toFixed(2),        delta:'▲ live' },
+          { label:'Match Rate',  val: (a.matchRate||0).toFixed(1)+'%',   delta:'▲ live' },
+        ],
+        cardStyle: { padding:'14px 18px', borderRadius:'14px', background:'rgba(255,255,255,0.022)',
+          border:'1px solid rgba(255,255,255,0.06)' },
+        cardHover: { padding:'14px 18px', borderRadius:'14px', background:'rgba(124,124,255,0.04)',
+          border:'1px solid rgba(124,124,255,0.3)' },
+        iconStyle: { flex:'none', width:'38px', height:'38px', borderRadius:'11px', display:'flex',
+          alignItems:'center', justifyContent:'center', fontWeight:700, fontSize:'13px',
+          color:'#C7CAE0', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)' },
+        onStageClick: () => this.openStageModal(a.id, a.name),
+      };
+    });
+
+    // Pipeline columns
+    const pipelineCols = this.STAGES.map(st => {
+      const colApps = rawApps.filter(a => this.getStage(a.id) === st.id);
+      const totalRev = colApps.reduce((sum, a) => sum + (a.revenue||0), 0);
+      return {
+        name: st.label.replace('Operations — ', ''),
+        subtitle: st.label.startsWith('Operations') ? 'Operations' : '',
+        count: colApps.length,
+        isEmpty: colApps.length === 0,
+        totalRevenue: colApps.length ? this.fmtMoney(totalRev) : '—',
+        titleStyle: { fontSize:'13px', fontWeight:700, color: st.color },
+        colStyle: { width:'210px', flex:'none', background:'rgba(255,255,255,0.018)',
+          border:'1px solid rgba(255,255,255,0.06)', borderRadius:'14px', padding:'14px' },
+        onDragOver: e => e.preventDefault(),
+        onDrop: () => { if (s.dragAppId) this.moveAppToStage(s.dragAppId, st.id); },
+        cards: colApps.map(a => ({
+          icon: (a.name||'').slice(0,2).toUpperCase(),
+          name: a.name,
+          revenue: this.fmtMoney(a.revenue||0),
+          ecpm: '$'+(a.ecpm||0).toFixed(2),
+          impressions: this.fmtNum(a.impressions||0),
+          onDragStart: () => this.setState({ dragAppId: a.id }),
+          onMove: () => this.openStageModal(a.id, a.name),
+          cardStyle: { cursor:'grab', padding:'11px 12px', borderRadius:'11px',
+            background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.07)' },
+          cardHover: { cursor:'grab', padding:'11px 12px', borderRadius:'11px',
+            background:'rgba(124,124,255,0.08)', border:'1px solid rgba(124,124,255,0.35)' },
+          iconStyle: { flex:'none', width:'28px', height:'28px', borderRadius:'8px', display:'flex',
+            alignItems:'center', justifyContent:'center', fontWeight:700, fontSize:'11px',
+            color:'#C7CAE0', background:'rgba(255,255,255,0.06)' },
+        })),
+      };
+    });
+
+    // Stage modal options
+    const stageOptions = this.STAGES.map(st => ({
+      label: st.label, desc: st.desc,
+      dot: { display:'inline-block', width:'8px', height:'8px', borderRadius:'50%',
+        background: st.color, flexShrink:0, marginTop:'4px' },
+      optStyle: { display:'flex', alignItems:'flex-start', gap:'12px', padding:'10px 14px',
+        borderRadius:'10px', cursor:'pointer',
+        background: s.stageModalAppId && this.getStage(s.stageModalAppId)===st.id
+          ? 'rgba(124,124,255,0.12)' : 'transparent',
+        border: s.stageModalAppId && this.getStage(s.stageModalAppId)===st.id
+          ? '1px solid rgba(124,124,255,0.3)' : '1px solid transparent' },
+      optHover: { display:'flex', alignItems:'flex-start', gap:'12px', padding:'10px 14px',
+        borderRadius:'10px', cursor:'pointer', background:'rgba(255,255,255,0.04)',
+        border:'1px solid rgba(255,255,255,0.08)' },
+      onSelect: () => this.moveAppToStage(s.stageModalAppId, st.id),
     }));
+
+    // View toggle button styles
+    const vBtnBase = { display:'flex', alignItems:'center', gap:'6px', padding:'6px 12px',
+      borderRadius:'8px', fontSize:'12.5px', fontWeight:600, cursor:'pointer' };
+    const listViewBtnStyle   = Object.assign({}, vBtnBase, s.dashView==='list'
+      ? { background:'rgba(124,124,255,0.2)', color:'#B9B9FF' } : { color:'#777C92' });
+    const pipelineViewBtnStyle = Object.assign({}, vBtnBase, s.dashView==='pipeline'
+      ? { background:'rgba(124,124,255,0.2)', color:'#B9B9FF' } : { color:'#777C92' });
+
+    // Sort button styles
+    const sBtnBase = { padding:'5px 12px', borderRadius:'8px', fontSize:'12px', fontWeight:600, cursor:'pointer' };
+    const sortRevStyle  = Object.assign({}, sBtnBase, s.sortBy==='revenue'
+      ? { background:'rgba(124,124,255,0.18)', color:'#A9AAFF' } : { color:'#777C92' });
+    const sortEcpmStyle = Object.assign({}, sBtnBase, s.sortBy==='ecpm'
+      ? { background:'rgba(124,124,255,0.18)', color:'#A9AAFF' } : { color:'#777C92' });
+    const sortImprStyle = Object.assign({}, sBtnBase, s.sortBy==='impressions'
+      ? { background:'rgba(124,124,255,0.18)', color:'#A9AAFF' } : { color:'#777C92' });
 
     const sm = s.liveSummary;
     const summary = sm ? [
@@ -680,6 +929,25 @@ class Component extends DCLogic {
       client, summary, apps,
       dataSourceDot, dataSourceLabel,
       chip, pubAvatarStyle, primaryHover, ghostHover,
+      // View toggle
+      isListView: s.dashView==='list', isPipelineView: s.dashView==='pipeline',
+      setListView:     () => this.setState({ dashView:'list' }),
+      setPipelineView: () => this.setState({ dashView:'pipeline' }),
+      listViewBtnStyle, pipelineViewBtnStyle,
+      // Sort
+      sortRevenue: () => this.setState({ sortBy:'revenue' }),
+      sortEcpm:    () => this.setState({ sortBy:'ecpm' }),
+      sortImpr:    () => this.setState({ sortBy:'impressions' }),
+      sortRevStyle, sortEcpmStyle, sortImprStyle,
+      // Pipeline
+      pipelineCols,
+      stageMenuHover: { background:'rgba(255,255,255,0.06)', cursor:'pointer' },
+      // Stage modal
+      showStageModal: s.showStageModal,
+      stageModalAppName: s.stageModalAppName,
+      stageOptions,
+      closeStageModal: () => this.setState({ showStageModal:false }),
+      stopProp: e => e && e.stopPropagation && e.stopPropagation(),
 
       // Settings
       sf: s.sf, settingsSaved: s.settingsSaved,
